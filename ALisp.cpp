@@ -53,6 +53,7 @@ void test() {
 	args2.push(three);
 	args2.push(two);
 	args2.push(one);
+	std::cout << "Args: " << args2 << std::endl;
 	test_print(ListType(args2.cbegin(), args2.cend()));
 
 	ProcCell print(test_print);

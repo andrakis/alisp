@@ -296,13 +296,13 @@ namespace ALisp {
 
 			StringType str() const final override {
 				std::ostringstream ss;
-				ss << stringOpen<CellTypeType>();
+				ss << stringOpen();
 				for (auto it = _value.cbegin(); it != _value.cend(); ++it) {
 					if (it != _value.cbegin())
 						ss << " ";
 					ss << it->str();
 				}
-				ss << stringClose<CellTypeType>();
+				ss << stringClose();
 				return ss.str();
 			}
 
@@ -328,11 +328,14 @@ namespace ALisp {
 			void lambda_body(const Cell &body) EXCEPT final override { _value[lm_body] = body; }
 		protected:
 			ValueType _value;
-			template<CellType> StringType stringOpen() const { return "("; }
-			template<> StringType stringOpen<CellType::Lambda>() const { return "(#Lambda "; }
-			template<> StringType stringOpen<CellType::Macro>() const { return "(#Macro "; }
-
-			template<CellType> StringType stringClose() const { return ")"; }
+			StringType stringOpen() const {
+				switch (type()) {
+					case CellType::Lambda: return "(#Lambda "; 
+					case CellType::Macro: return "(#Macro "; 
+					default: return "(";
+				}
+			}
+			StringType stringClose() const { return ")"; }
 
 			static const size_t lm_ptr = 0, lm_args = 1, lm_body = 2;
 		};

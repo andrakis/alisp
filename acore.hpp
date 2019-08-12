@@ -25,7 +25,13 @@ public:
 #else
 	std::string msg;
 	Exception(std::string message) : msg(message) { }
-	const char *what() const  _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_USE_NOEXCEPT { return msg.c_str(); }
+	#ifndef _GLIBCXX_TXN_SAFE_DYN 
+	  #define _GLIBCXX_TXN_SAFE_DYN 
+	#endif
+	#ifndef _GLIBCXX_USE_NOEXCEPT 
+	  #define _GLIBCXX_USE_NOEXCEPT 
+	#endif
+	const char *what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_USE_NOEXCEPT { return msg.c_str(); }
 #endif
 };
 
@@ -54,5 +60,9 @@ namespace ALisp {
 	// Callable function types
 	typedef Cell(*ProcType)(const ListType &args);
 	typedef Cell(*ProcEnvType)(const ListType &args, EnvironmentType env);
+
+	// Always-present cells (see core.cpp)
+	extern Cell Nil, True, False;
+	extern AtomType _if, _quote, _define, _set, _lambda, _macro, _begin;
 }
 

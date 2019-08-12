@@ -4,10 +4,6 @@
 #include "atoms.hpp"
 
 namespace ALisp {
-	Cell Nil(AtomCell(0));
-	Cell True(AtomCell(1));
-	Cell False(AtomCell(2));
-
 	Cell Cell::head() const EXCEPT {
 		if (pImpl) return pImpl->head();
 		return Nil;
@@ -23,6 +19,10 @@ namespace ALisp {
 	size_t Cell::size() const EXCEPT {
 		if (pImpl) return pImpl->size();
 		return 0;
+	}
+	bool Cell::size_atleast(size_t i) const EXCEPT {
+		if (pImpl) return pImpl->size_atleast(i);
+		return false;
 	}
 	Cell Cell::index(size_t i) const EXCEPT {
 		if (pImpl) return pImpl->index(i);

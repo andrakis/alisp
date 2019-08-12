@@ -4,10 +4,12 @@
 // Include this to use alisp.
 #pragma once
 
+#include "acore.hpp"
+#include "atoms.hpp"
 #include "cell.hpp"
 #include "environment.hpp"
-#include "atoms.hpp"
-#include "acore.hpp"
+#include "parser.hpp"
+#include "eval_simple.hpp"
 
 namespace ALisp {
 	// Error codes for alisp functions

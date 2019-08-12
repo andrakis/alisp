@@ -49,10 +49,12 @@ namespace ALisp {
 			virtual ProcType proc() const EXCEPT { throw Exception("Not a proc"); }
 			virtual ProcEnvType proc_env() const EXCEPT { throw Exception("Not a proc_env"); }
 
+			// Operators
 			virtual void multiply(const Cell &other) EXCEPT { throw Exception("Cannot multiply"); }
 			virtual void add(const Cell &other) EXCEPT { throw Exception("Cannot add"); }
 			virtual void subtract(const Cell &other) EXCEPT { throw Exception("Cannot subtract"); }
 			virtual void divide(const Cell &other) EXCEPT { throw Exception("Cannot divide"); }
+			virtual bool equals(const Cell &other) const { return false; }
 
 			// List functions
 			virtual void push(const Cell &value) EXCEPT { throw Exception("Not a list"); }
@@ -60,6 +62,7 @@ namespace ALisp {
 			virtual Cell tail() const EXCEPT { throw Exception("Not a list"); }
 			virtual bool empty() const EXCEPT { throw Exception("Not a list"); }
 			virtual size_t size() const EXCEPT { throw Exception("Not a list"); }
+			virtual bool size_atleast(size_t i) const EXCEPT { throw Exception("Not a list"); }
 			virtual Cell index(size_t i) const EXCEPT { throw Exception("Not a list"); }
 			virtual const_iterator cbegin() const EXCEPT { throw Exception("Not a list"); }
 			virtual const_iterator cend() const EXCEPT { throw Exception("Not a list"); }
@@ -112,6 +115,17 @@ namespace ALisp {
 			return pImpl->env();
 		}
 
+		bool operator==(const Cell &other) const {
+			// Special case: no implementation, nothing is equal
+			if (!pImpl) return false;
+			// Special case: comparison to self
+			if (other.pImpl == pImpl) return true;
+			return pImpl->equals(other);
+		}
+		bool operator!= (const Cell &other) const {
+			return !(*this == other);
+		}
+
 		Cell& operator+= (const Cell &other) EXCEPT {
 			if (pImpl) {
 				pImpl->add(other);
@@ -142,6 +156,7 @@ namespace ALisp {
 		Cell tail() const EXCEPT;
 		bool empty() const EXCEPT;
 		size_t size() const EXCEPT;
+		bool size_atleast(size_t i) const EXCEPT;
 		void push(const Cell &value) EXCEPT { if (pImpl) pImpl->push(value); }
 		Cell index(size_t i) const EXCEPT;
 		const_iterator cbegin() const EXCEPT {
@@ -183,6 +198,9 @@ namespace ALisp {
 			}
 
 			StringType str() const final override { return "(none)"; }
+			bool equals(const Cell &other) const final override {
+				return other.type() == CellType::None;
+			}
 		};
 		NoneTypeCell()
 			: Cell(std::make_unique<INoneTypeCell>()) {}
@@ -202,6 +220,9 @@ namespace ALisp {
 			AtomType atomId() const EXCEPT final override { return _value; }
 
 			StringType str() const final override { return Atoms::ToString(_value); }
+			bool equals(const Cell &other) const final override {
+				return other.type() == CellType::Atom && _value == other.atomId();
+			}
 		protected:
 			ValueType _value;
 		};
@@ -224,6 +245,9 @@ namespace ALisp {
 			StringType str() const final override { return _value; }
 
 			void add(const Cell &other) EXCEPT final override { _value += other.str(); }
+			bool equals(const Cell &other) const final override {
+				return other.str() == _value;
+			}
 		protected:
 			ValueType _value;
 		};
@@ -252,6 +276,11 @@ namespace ALisp {
 			}
 
 			StringType str() const final override { return std::to_string(_value); }
+			bool equals(const Cell &other) const final override {
+				return (other.type() == CellType::Integer && (IntegerType)_value == other.integerValue()) ||
+					(other.type() == CellType::Float && (FloatType)_value == other.floatValue()) ||
+					str() == other.str();
+			}
 
 			void add(const Cell &other) EXCEPT final override { _value += convertOther(other); }
 			void subtract(const Cell &other) EXCEPT final override { _value -= convertOther(other); }
@@ -305,6 +334,15 @@ namespace ALisp {
 				ss << stringClose();
 				return ss.str();
 			}
+			bool equals(const Cell &other) const final override {
+				if (type() != other.type()) return false;
+				auto it1 = cbegin();
+				auto it2 = other.cbegin();
+				for (; it1 != cend() && it2 != cend(); ++it1, ++it2) {
+					if (*it1 != *it2) return false;
+				}
+				return it1 == cend() && it2 == other.cend();
+			}
 
 			void push(const Cell &value) EXCEPT final override { _value.push_back(value); }
 			Cell head() const EXCEPT final override {
@@ -316,16 +354,25 @@ namespace ALisp {
 			}
 			bool empty() const EXCEPT final override { return _value.empty(); }
 			size_t size() const EXCEPT final override { return _value.size(); }
+			bool size_atleast(size_t i) const EXCEPT final override {
+				return (cbegin() + i) != cend();
+			}
 			const_iterator cbegin() const EXCEPT final override { return _value.cbegin(); }
 			const_iterator cend() const EXCEPT final override { return _value.cend(); }
+			Cell index(size_t i) const EXCEPT {
+				auto it = cbegin() + i;
+				if (it != cend())
+					return *it;
+				return Nil;
+			}
 
 			// Lambda/macro functions
 			Cell lambda_ptr() const EXCEPT final override { return _value[lm_ptr]; }
-			void lambda_ptr(const Cell &ptr) EXCEPT final override { _value[lm_ptr] = ptr; }
+			void lambda_ptr(const Cell &ptr) EXCEPT final override { lm(); _value[lm_ptr] = ptr; }
 			Cell lambda_args() const EXCEPT final override { return _value[lm_args]; }
-			void lambda_args(const Cell &args) EXCEPT final override { _value[lm_args] = args; }
+			void lambda_args(const Cell &args) EXCEPT final override { lm(); _value[lm_args] = args; }
 			Cell lambda_body() const EXCEPT final override { return _value[lm_body]; }
-			void lambda_body(const Cell &body) EXCEPT final override { _value[lm_body] = body; }
+			void lambda_body(const Cell &body) EXCEPT final override { lm(); _value[lm_body] = body; }
 		protected:
 			ValueType _value;
 			StringType stringOpen() const {
@@ -337,7 +384,12 @@ namespace ALisp {
 			}
 			StringType stringClose() const { return ")"; }
 
-			static const size_t lm_ptr = 0, lm_args = 1, lm_body = 2;
+			static const size_t lm_ptr = 0, lm_args = 1, lm_body = 2, lm_required = 3;
+			// Helper function to reserve enough space for lambda values
+			void lm() {
+				if (size() < lm_required)
+					_value.resize(lm_required);
+			}
 		};
 	};
 
@@ -351,6 +403,9 @@ namespace ALisp {
 			}
 
 			StringType str() const final override { return "(#Proc)"; }
+			bool equals(const Cell &other) const final override {
+				return other.type() == CellType::Proc && other.proc() == _proc;
+			}
 
 			ProcType proc() const EXCEPT final override { return _proc; }
 			ProcEnvType proc_env() const EXCEPT final override { throw Exception("Not a ProcEnv"); }
@@ -371,6 +426,9 @@ namespace ALisp {
 			}
 
 			StringType str() const final override { return "(#ProcEnv)"; }
+			bool equals(const Cell &other) const final override {
+				return other.type() == CellType::ProcEnv && other.proc_env() == _proc;
+			}
 
 			ProcType proc() const EXCEPT final override { throw Exception("Not a Proc"); }
 			ProcEnvType proc_env() const EXCEPT final override { return _proc; }
@@ -390,6 +448,9 @@ namespace ALisp {
 			}
 
 			EnvironmentType env() EXCEPT final override { return _env; }
+			bool equals(const Cell &other) const final override {
+				return other.type() == CellType::EnvPointer && other.env() == _env;
+			}
 
 			StringType str() const final override { return "(#env)"; }
 		protected:

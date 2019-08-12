@@ -36,11 +36,9 @@ namespace ALisp {
 			return Get(it->second);
 		}
 		Cell Declare(const char *name) EXCEPT {
-			return Declare(name, ++detail::atom_counter);
-		}
-		Cell Declare(const char *name, AtomType id) EXCEPT {
 			if (Exists(name))
 				return Get(name);
+			AtomType id = detail::atom_counter++;
 			AtomCell atom(id);
 			detail::atom_to_cell.emplace(id, atom);
 			detail::atom_to_string.emplace(id, StringType(name));

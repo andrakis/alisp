@@ -1,12 +1,24 @@
 #include "alisp.hpp"
 
-using namespace ALisp;
+namespace ALisp {
+	// Standard library atoms
+	Cell Nil, True, False;
 
-ErrorCode ALisp::alisp_init() {
-	Atoms::Declare("nil", Nil.atomId());
-	Atoms::Declare("true", True.atomId());
-	Atoms::Declare("false", False.atomId());
-	Atoms::detail::atom_counter = 3;
+	// Eval atoms
+	AtomType _if, _quote, _define, _set, _lambda, _macro, _begin;
 
-	return ErrorCode::NONE;
+	ErrorCode alisp_init() {
+		Nil = Atoms::Declare("nil");
+		True = Atoms::Declare("true");
+		False = Atoms::Declare("false");
+		_quote = Atoms::Declare("quote").atomId();
+		_if = Atoms::Declare("if").atomId();
+		_define = Atoms::Declare("define").atomId();
+		_set = Atoms::Declare("set!").atomId();
+		_lambda = Atoms::Declare("lambda").atomId();
+		_macro = Atoms::Declare("macro").atomId();
+		_begin = Atoms::Declare("begin").atomId();
+
+		return ErrorCode::NONE;
+	}
 }

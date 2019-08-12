@@ -23,12 +23,14 @@ Our Lisp implementation specialises the data types, so each Cell takes only the 
 How (to build)?
 ---------------
 
-On GCC: `g++ -std=c++14 *.cpp -O2`
+On GCC: `make`
 
 On Visual Studio: Open `alisp.vcxproj` and compile.
 
 History
 -------
+
+* 0.32 - Working eval loop, parsing; G++ fixes; Makefile included
 
 * 0.22 - G++ fixes. Now compiles under G++ using `std=c++14`. Valgrind reports no memory leaks.
 

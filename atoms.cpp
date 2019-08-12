@@ -11,9 +11,9 @@ namespace ALisp {
 		}
 
 		std::string ToString(AtomType id) EXCEPT {
-			for (auto it = detail::atom_to_string.cbegin(); it != detail::atom_to_string.cend(); ++it)
-				if (it->first == id)
-					return it->second;
+			auto it = detail::atom_to_string.find(id);
+			if (it != detail::atom_to_string.end())
+				return it->second;
 			throw new Exception("atomid " + std::to_string(id) + " not found");
 		}
 		bool Exists(AtomType id) {
@@ -41,7 +41,7 @@ namespace ALisp {
 		Cell Declare(const char *name, AtomType id) EXCEPT {
 			if (Exists(name))
 				return Get(name);
-			Cell atom(CellType::Atom, id);
+			AtomCell atom(id);
 			detail::atom_to_cell.emplace(id, atom);
 			detail::atom_to_string.emplace(id, StringType(name));
 			detail::string_to_atom.emplace(StringType(name), id);

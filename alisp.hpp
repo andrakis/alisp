@@ -7,6 +7,7 @@
 #include "cell.hpp"
 #include "environment.hpp"
 #include "atoms.hpp"
+#include "acore.hpp"
 
 namespace ALisp {
 	// Error codes for alisp functions

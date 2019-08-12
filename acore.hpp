@@ -32,17 +32,15 @@ public:
 #define EXCEPT	THROW(Exception)
 
 #ifdef _MSC_VER
+  #define NOMINMAX
   #include <Windows.h>
   #define debugger_attached() IsDebuggerPresent()
-  // Windows.h defines these, but we don't want their definitions
-  #undef min
-  #undef max
 #else
   #define debugger_attached() false
 #endif
 
 namespace ALisp {
-	class Cell; // From cell.hpp
+	struct Cell; // From cell.hpp
 	class Environment; // From environment.hpp
 
 	// Basic types
@@ -54,7 +52,7 @@ namespace ALisp {
 	typedef std::shared_ptr<Environment> EnvironmentType;
 
 	// Callable function types
-	typedef Cell(*ProcType)(ListType &&args);
-	typedef Cell(*ProcEnvType)(ListType &&args, EnvironmentType &&env);
+	typedef Cell(*ProcType)(const ListType &args);
+	typedef Cell(*ProcEnvType)(const ListType &args, EnvironmentType env);
 }
 

@@ -7,11 +7,11 @@
  *  - Integer (whole number; long type)
  *  - Float (double type)
  *  - List (vector)
- *  - Environment (pointer to environment)
- *  - Lambda (List+Environment)
- *  - Macro (List+Environment)
+ *  - Lambda (List in form (<EnvPtr> <Args> <Body>))
+ *  - Macro (List in form (<EnvPtr> <Args> <Body>))
  *  - Proc (callable function)
  *  - ProcEnv (callable function that also takes current environment)
+ *  - Environment (pointer to environment)
  */
 
 #include <iostream>
@@ -20,20 +20,43 @@
 
 using namespace ALisp;
 
+Cell test_print(const ListType &args) {
+	for (auto it = args.cbegin(); it != args.cend(); ++it) {
+		if (it != args.cbegin())
+			std::cout << " ";
+		std::cout << it->str();
+	}
+	std::cout << std::endl;
+	return Nil;
+}
+
 void test() {
-	IntegerCell one(1), two(2), three(3);
-	FloatCell approx_one(1.001), approx_two(2.2), approx_three(3.33333);
+	Cell one(IntCell(1)), two(IntCell(2));
+	Cell three(one);
+	three += two;
 
 	std::cout << "One: " << one << std::endl;
 	std::cout << "Two: " << two << std::endl;
 	std::cout << "Three: " << three << std::endl;
 
-	std::cout << "Approximately one: " << approx_one << std::endl;
-	std::cout << "Approximately two: " << approx_two << std::endl;
-	std::cout << "Approximately three: " << approx_three << std::endl;
+	std::cout << "Nil: " << Nil << std::endl;
+	std::cout << "True: " << True << std::endl;
+	std::cout << "False: " << False << std::endl;
 
-	Cell added = one.add(two);
-	std::cout << "One plus two: " << added << std::endl;
+	ListType args;
+	args.push_back(one);
+	args.push_back(two);
+	args.push_back(three);
+	test_print(args);
+
+	ListCell args2;
+	args2.push(three);
+	args2.push(two);
+	args2.push(one);
+	test_print(ListType(args2.cbegin(), args2.cend()));
+
+	ProcCell print(test_print);
+	print.proc()(ListType(args2.cbegin(), args2.cend()));
 }
 
 int main(int argc, char **argv) {

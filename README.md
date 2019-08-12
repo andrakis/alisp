@@ -20,6 +20,13 @@ Additionally, since each Scheme cell (in our implementation) has all possible da
 
 Our Lisp implementation specialises the data types, so each Cell takes only the memory needed for its type.
 
+How (to build)?
+---------------
+
+On GCC: `g++ -std=c++14 *.cpp -O2`
+
+On Visual Studio: Open `alisp.vcxproj` and compile.
+
 History
 -------
 

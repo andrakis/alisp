@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="HeaderFiles"
+                   displayName="Header Files"
+                   projectFiles="true">
+      <itemPath>acore.hpp</itemPath>
+      <itemPath>alisp.hpp</itemPath>
+      <itemPath>atoms.hpp</itemPath>
+      <itemPath>cell.hpp</itemPath>
+      <itemPath>environment.hpp</itemPath>
+      <itemPath>eval_simple.hpp</itemPath>
+      <itemPath>parser.hpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="SourceFiles"
+                   displayName="Source Files"
+                   projectFiles="true">
+      <itemPath>ALisp.cpp</itemPath>
+      <itemPath>atoms.cpp</itemPath>
+      <itemPath>cell.cpp</itemPath>
+      <itemPath>core.cpp</itemPath>
+      <itemPath>eval_simple.cpp</itemPath>
+      <itemPath>parser.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Debug" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <standard>11</standard>
+        </ccTool>
+      </compileType>
+      <item path="ALisp.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="acore.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="alisp.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="atoms.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="atoms.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cell.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="cell.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="core.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="environment.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="eval_simple.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="eval_simple.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="parser.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="parser.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+    <conf name="Release" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>5</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <standard>11</standard>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+      </compileType>
+      <item path="ALisp.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="acore.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="alisp.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="atoms.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="atoms.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cell.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="cell.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="core.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="environment.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="eval_simple.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="eval_simple.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="parser.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="parser.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

@@ -29,6 +29,5 @@ namespace ALisp {
 		Cell Get(AtomType id) EXCEPT;
 		Cell Get(const char *name) EXCEPT;
 		Cell Declare(const char *name) EXCEPT;
-		Cell Declare(const char *name, AtomType id) EXCEPT;
 	}
 }

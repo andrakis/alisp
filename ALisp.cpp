@@ -58,17 +58,19 @@ Cell test_equal(const ListType &args) {
 	return args[0] == args[1] ? True : False;
 }
 
+using namespace Atoms;
+
 void test_eval() {
 	StringType code = "(begin (define fac (lambda (n) (fac/2 n 1))) (define fac/2 (lambda (n a) (if (= 1 n) a (fac/2 (- n 1) (* n a))))) (define x 10) (print \"Fac\" x(fac x)))";
 	Cell code_cell = Parser::read(code);
 	Environment *env_ptr = new Environment();
 	EnvironmentType env_t(env_ptr);
 
-	env_t->create(Atoms::Declare("print").atomId(), ProcCell(test_print));
-	env_t->create(Atoms::Declare("+").atomId(), ProcCell(test_plus));
-	env_t->create(Atoms::Declare("-").atomId(), ProcCell(test_minus));
-	env_t->create(Atoms::Declare("*").atomId(), ProcCell(test_multiply));
-	env_t->create(Atoms::Declare("=").atomId(), ProcCell(test_equal));
+	env_t->create(Declare("print"), ProcCell(test_print));
+	env_t->create(Declare("+"), ProcCell(test_plus));
+	env_t->create(Declare("-"), ProcCell(test_minus));
+	env_t->create(Declare("*"), ProcCell(test_multiply));
+	env_t->create(Declare("="), ProcCell(test_equal));
 
 	EnvironmentCell env_cell(env_t);
 

@@ -52,6 +52,13 @@ namespace ALisp {
 
 		bool has_parent() const { return _outer != nullptr; }
 
+		void create(const Cell &cell, val_type val) {
+			switch (cell.type()) {
+				case CellType::Atom: return create(cell.atomId(), val);
+				case CellType::String: return create(Atoms::Declare(cell.str().c_str()), val);
+				default: throw Exception("Cannot convert cell to atom");
+			}
+		}
 		void create(key_type key, val_type val) {
 			// Note function signature: val is copied not referenced
 			_map[key] = val;

@@ -55,6 +55,8 @@ namespace ALisp {
 			virtual void subtract(const Cell &other) EXCEPT { throw Exception("Cannot subtract"); }
 			virtual void divide(const Cell &other) EXCEPT { throw Exception("Cannot divide"); }
 			virtual bool equals(const Cell &other) const { return false; }
+			virtual bool lessthan(const Cell &other) const { return false; }
+			virtual bool morethan(const Cell &other) const { return false; }
 
 			// List functions
 			virtual void push(const Cell &value) EXCEPT { throw Exception("Not a list"); }
@@ -115,6 +117,7 @@ namespace ALisp {
 			return pImpl->env();
 		}
 
+		// Operator implementations
 		bool operator==(const Cell &other) const {
 			// Special case: no implementation, nothing is equal
 			if (!pImpl) return false;
@@ -124,6 +127,22 @@ namespace ALisp {
 		}
 		bool operator!= (const Cell &other) const {
 			return !(*this == other);
+		}
+		bool operator< (const Cell &other) const {
+			if (!pImpl) return false;
+			return pImpl->lessthan(other);
+		}
+		bool operator<= (const Cell &other) const {
+			if (!pImpl) return false;
+			return pImpl->lessthan(other) || pImpl->equals(other);
+		}
+		bool operator> (const Cell &other) const {
+			if (!pImpl) return false;
+			return pImpl->morethan(other);
+		}
+		bool operator>= (const Cell &other) const {
+			if (!pImpl) return false;
+			return pImpl->morethan(other) || pImpl->equals(other);
 		}
 
 		Cell& operator+= (const Cell &other) EXCEPT {
@@ -280,6 +299,14 @@ namespace ALisp {
 				return (other.type() == CellType::Integer && (IntegerType)_value == other.integerValue()) ||
 					(other.type() == CellType::Float && (FloatType)_value == other.floatValue()) ||
 					str() == other.str();
+			}
+			bool lessthan(const Cell &other) const final override {
+				return (other.type() == CellType::Integer && (IntegerType)_value < other.integerValue()) ||
+					(other.type() == CellType::Float && (FloatType)_value < other.floatValue());
+			}
+			bool morethan(const Cell &other) const final override {
+				return (other.type() == CellType::Integer && (IntegerType)_value > other.integerValue()) ||
+					(other.type() == CellType::Float && (FloatType)_value > other.floatValue());
 			}
 
 			void add(const Cell &other) EXCEPT final override { _value += convertOther(other); }

@@ -12,6 +12,10 @@
 #include <memory>
 #include <unordered_map>
 
+#include "acore.hpp"
+#include "cell.hpp"
+#include "excepts.hpp"
+
 namespace ALisp {
 	class Environment {
 	public:
@@ -51,6 +55,7 @@ namespace ALisp {
 		}
 
 		bool has_parent() const { return _outer != nullptr; }
+		outer_type get_parent() const { return _outer; }
 
 		void create(const Cell &cell, val_type val) {
 			switch (cell.type()) {
@@ -82,15 +87,15 @@ namespace ALisp {
 			// Note function signature: val is copied not referenced
 			if (has_key(key)) create(key, val);
 			else if (has_parent()) _outer->set(key, val);
-			throw Exception("key not found");
+			throw KeyNotFoundException(key);
 		}
-		Cell get(key_type key) const EXCEPT {
+		Cell get(key_type key) EXCEPT {
 			auto it = find_key(key);
 			if (it != cend())
 				return it->second;
 			else if (has_parent())
 				return _outer->get(key);
-			throw Exception("key not found");
+			throw KeyNotFoundException(key);
 		}
 	};
 }

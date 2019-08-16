@@ -5,6 +5,7 @@
 #include <tuple>
 
 #include "acore.hpp"
+#include "excepts.hpp"
 #include "cell.hpp"
 
 namespace ALisp {

@@ -23,12 +23,16 @@ Our Lisp implementation specialises the data types, so each Cell takes only the 
 How (to build)?
 ---------------
 
-On GCC: `make`
+On Linux: `make CONF=Release`
+
+On Linux - Cross Platform OpenRISC: `make CONF=Release CND_PLATFORM=or1000 CXX=or1k-linux-musl-g++`
 
 On Visual Studio: Open `alisp.vcxproj` and compile.
 
 History
 -------
+
+* 0.40 - Added REPL, exception handling
 
 * 0.32 - Working eval loop, parsing; G++ fixes; Makefile included
 

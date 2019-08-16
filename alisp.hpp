@@ -5,11 +5,15 @@
 #pragma once
 
 #include "acore.hpp"
+#include "excepts.hpp"
 #include "atoms.hpp"
 #include "cell.hpp"
 #include "environment.hpp"
 #include "parser.hpp"
-#include "eval_simple.hpp"
+#include "eval.hpp"
+#include "repl.hpp"
+#include "stdlib.hpp"
+#include "version.hpp"
 
 namespace ALisp {
 	// Error codes for alisp functions

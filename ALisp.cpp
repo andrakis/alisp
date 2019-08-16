@@ -19,46 +19,8 @@
 #include "alisp.hpp"
 
 using namespace ALisp;
-
-Cell test_print(const ListType &args) {
-	for (auto it = args.cbegin(); it != args.cend(); ++it) {
-		if (it != args.cbegin())
-			std::cout << " ";
-		std::cout << it->str();
-	}
-	std::cout << std::endl;
-	return Nil;
-}
-
-Cell test_plus(const ListType &args) {
-	auto it = args.cbegin();
-	Cell value(*it++);
-	for (; it != args.cend(); ++it)
-		value += *it;
-	return value;
-}
-
-Cell test_minus(const ListType &args) {
-	auto it = args.cbegin();
-	Cell value(*it++);
-	for (; it != args.cend(); ++it)
-		value -= *it;
-	return value;
-}
-
-Cell test_multiply(const ListType &args) {
-	auto it = args.cbegin();
-	Cell value(*it++);
-	for (; it != args.cend(); ++it)
-		value *= *it;
-	return value;
-}
-
-Cell test_equal(const ListType &args) {
-	return args[0] == args[1] ? True : False;
-}
-
 using namespace Atoms;
+using namespace REPL;
 
 void test_eval() {
 	StringType code = "(begin (define fac (lambda (n) (fac/2 n 1))) (define fac/2 (lambda (n a) (if (= 1 n) a (fac/2 (- n 1) (* n a))))) (define x 10) (print \"Fac\" x(fac x)))";
@@ -66,11 +28,11 @@ void test_eval() {
 	Environment *env_ptr = new Environment();
 	EnvironmentType env_t(env_ptr);
 
-	env_t->create(Declare("print"), ProcCell(test_print));
-	env_t->create(Declare("+"), ProcCell(test_plus));
-	env_t->create(Declare("-"), ProcCell(test_minus));
-	env_t->create(Declare("*"), ProcCell(test_multiply));
-	env_t->create(Declare("="), ProcCell(test_equal));
+	env_t->create(Declare("print"), ProcCell(Stdlib::print));
+	env_t->create(Declare("+"), ProcCell(Stdlib::plus));
+	env_t->create(Declare("-"), ProcCell(Stdlib::minus));
+	env_t->create(Declare("*"), ProcCell(Stdlib::multiply));
+	env_t->create(Declare("="), ProcCell(Stdlib::equal));
 
 	EnvironmentCell env_cell(env_t);
 
@@ -94,7 +56,7 @@ void test() {
 	args.push_back(one);
 	args.push_back(two);
 	args.push_back(three);
-	test_print(args);
+	Stdlib::print(args);
 
 	ListCell args2;
 	args2.push(three);
@@ -105,17 +67,31 @@ void test() {
 	std::cout << " At 2: " << args2.index(2) << std::endl;
 	std::cout << " At 3: " << args2.index(3) << std::endl;
 	std::cout << "Args: " << args2 << std::endl;
-	test_print(ListType(args2.cbegin(), args2.cend()));
+	Stdlib::print(ListType(args2.cbegin(), args2.cend()));
 
-	ProcCell print(test_print);
+	ProcCell print(Stdlib::print);
 	print.proc()(ListType(args2.cbegin(), args2.cend()));
 
 	test_eval();
 }
 
 int main(int argc, char **argv) {
-	alisp_init();
-	test();
+	//test();
+
+	ErrorCode error_code;
+	switch (error_code = alisp_init()) {
+		case ErrorCode::NONE:
+			// All good
+			break;
+		default:
+			std::cerr << "alisp_init() returned " << error_code << std::endl;
+			return 1;
+	}
+
+	Environment *env = new Environment();
+	EnvironmentType et(env);
+	EnvironmentCell ec(et);
+	REPL::REPL(ec);
 
 	if (debugger_attached()) {
 		std::cerr << "Press enter to exit";

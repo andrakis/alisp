@@ -60,13 +60,17 @@ namespace ALisp {
 				return Atoms::Declare(token.c_str());
 			}
 			Cell read_from(TokenListType &tokens) EXCEPT {
+				if (tokens.empty()) throw ParserException("Missing opening token");
+
 				const TokenType token(tokens.front());
 				tokens.pop_front();
 				if (token == "(") {
 					ListCell cells;
 					while (tokens.front() != ")") {
 						cells.push(read_from(tokens));
+						if (tokens.empty()) throw ParserException("Missing closing )");
 					}
+					if (tokens.empty()) throw ParserException("Missing closing )");
 					tokens.pop_front();
 					return cells;
 				} else

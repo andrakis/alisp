@@ -123,6 +123,11 @@
     <ClCompile Include="core.cpp" />
     <ClCompile Include="eval_simple.cpp" />
     <ClCompile Include="parser.cpp" />
+    <ClCompile Include="repl.cpp" />
+    <ClCompile Include="stdlib.cpp" />
+    <ClCompile Include="stdlib\conio.cpp" />
+    <ClCompile Include="stdlib\debug.cpp" />
+    <ClCompile Include="stdlib\operators.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acore.hpp" />
@@ -130,8 +135,13 @@
     <ClInclude Include="atoms.hpp" />
     <ClInclude Include="cell.hpp" />
     <ClInclude Include="environment.hpp" />
+    <ClInclude Include="eval.hpp" />
     <ClInclude Include="eval_simple.hpp" />
+    <ClInclude Include="excepts.hpp" />
     <ClInclude Include="parser.hpp" />
+    <ClInclude Include="repl.hpp" />
+    <ClInclude Include="stdlib.hpp" />
+    <ClInclude Include="version.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

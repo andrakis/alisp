@@ -1,3 +1,8 @@
+/**
+ * Eval - Simple
+ *
+ * Implements the Lisp eval loop, supports tail recursion.
+ */
 #include "eval_simple.hpp"
 
 namespace ALisp {
@@ -17,16 +22,16 @@ namespace ALisp {
 				}
 				if (x.empty()) return Nil;
 
-				Cell sym = x.head();
+				const Cell sym = x.head();
 				if (sym.type() == CellType::Atom) {
-					AtomType id = sym.atomId();
-					if (id == _quote) {			// (quote exp)
+					const AtomType id = sym.atomId();
+					if (id == _quote) {				// (quote exp)
 						return x.index(1);
-					} else if (id == _if) {
-						Cell test = x.index(1);
-						Cell conseq = x.index(2);
-						Cell alt = x.index(3); // default: Nil
-						Cell result = eval(test, env);
+					} else if (id == _if) {			// (if test conseq [alt])
+						const Cell test = x.index(1);
+						const Cell conseq = x.index(2);
+						const Cell alt = x.index(3); // default: Nil
+						const Cell result = eval(test, env);
 						x = (result == False) ? alt : conseq;
 						goto recurse;
 					} else if (id == _define) {		// (define var exp) - create new variable
@@ -62,7 +67,7 @@ namespace ALisp {
 				}
 
 				// (proc exp*)
-				Cell proc = eval(x.index(0), env);
+				const Cell proc = eval(x.index(0), env);
 				ListType exps;
 				if (proc.type() == CellType::Macro)
 					exps = ListType(x.tail().cbegin(), x.tail().cend());
@@ -77,6 +82,14 @@ namespace ALisp {
 						EnvironmentType env_shared(env_ptr);
 						env = EnvironmentCell(env_shared); // swap environments
 						x = proc.lambda_body();
+						goto recurse;
+					}
+					case CellType::Macro: {
+						Environment *env_ptr = new Environment(proc.lambda_args(), exps, proc.lambda_ptr().env());
+						EnvironmentType env_shared(env_ptr);
+						EnvironmentCell env2(env_shared); // short life
+						x = eval(proc.lambda_body(), env2);
+						// env2 should deallocate here
 						goto recurse;
 					}
 					case CellType::Proc:

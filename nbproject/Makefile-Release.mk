@@ -40,15 +40,20 @@ OBJECTFILES= \
 	${OBJECTDIR}/cell.o \
 	${OBJECTDIR}/core.o \
 	${OBJECTDIR}/eval_simple.o \
-	${OBJECTDIR}/parser.o
+	${OBJECTDIR}/parser.o \
+	${OBJECTDIR}/repl.o \
+	${OBJECTDIR}/stdlib.o \
+	${OBJECTDIR}/stdlib/conio.o \
+	${OBJECTDIR}/stdlib/debug.o \
+	${OBJECTDIR}/stdlib/operators.o
 
 
 # C Compiler Flags
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=
-CXXFLAGS=
+CCFLAGS=-shared-libgcc
+CXXFLAGS=-shared-libgcc
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -96,6 +101,31 @@ ${OBJECTDIR}/parser.o: parser.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/parser.o parser.cpp
+
+${OBJECTDIR}/repl.o: repl.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/repl.o repl.cpp
+
+${OBJECTDIR}/stdlib.o: stdlib.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib.o stdlib.cpp
+
+${OBJECTDIR}/stdlib/conio.o: stdlib/conio.cpp
+	${MKDIR} -p ${OBJECTDIR}/stdlib
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/conio.o stdlib/conio.cpp
+
+${OBJECTDIR}/stdlib/debug.o: stdlib/debug.cpp
+	${MKDIR} -p ${OBJECTDIR}/stdlib
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/debug.o stdlib/debug.cpp
+
+${OBJECTDIR}/stdlib/operators.o: stdlib/operators.cpp
+	${MKDIR} -p ${OBJECTDIR}/stdlib
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/operators.o stdlib/operators.cpp
 
 # Subprojects
 .build-subprojects:

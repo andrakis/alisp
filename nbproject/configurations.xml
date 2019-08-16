@@ -9,8 +9,13 @@
       <itemPath>atoms.hpp</itemPath>
       <itemPath>cell.hpp</itemPath>
       <itemPath>environment.hpp</itemPath>
+      <itemPath>eval.hpp</itemPath>
       <itemPath>eval_simple.hpp</itemPath>
+      <itemPath>excepts.hpp</itemPath>
       <itemPath>parser.hpp</itemPath>
+      <itemPath>repl.hpp</itemPath>
+      <itemPath>stdlib.hpp</itemPath>
+      <itemPath>version.hpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -19,12 +24,19 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="f1" displayName="stdlib" projectFiles="true">
+        <itemPath>stdlib/conio.cpp</itemPath>
+        <itemPath>stdlib/debug.cpp</itemPath>
+        <itemPath>stdlib/operators.cpp</itemPath>
+      </logicalFolder>
       <itemPath>ALisp.cpp</itemPath>
       <itemPath>atoms.cpp</itemPath>
       <itemPath>cell.cpp</itemPath>
       <itemPath>core.cpp</itemPath>
       <itemPath>eval_simple.cpp</itemPath>
       <itemPath>parser.cpp</itemPath>
+      <itemPath>repl.cpp</itemPath>
+      <itemPath>stdlib.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -49,6 +61,7 @@
       <compileType>
         <ccTool>
           <standard>11</standard>
+          <commandLine>-shared-libgcc</commandLine>
         </ccTool>
       </compileType>
       <item path="ALisp.cpp" ex="false" tool="1" flavor2="0">
@@ -69,13 +82,33 @@
       </item>
       <item path="environment.hpp" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="eval.hpp" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="eval_simple.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="eval_simple.hpp" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="excepts.hpp" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="parser.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="parser.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="repl.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="repl.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="stdlib.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="stdlib.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="stdlib/conio.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="stdlib/debug.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="stdlib/operators.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="version.hpp" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -91,6 +124,7 @@
         <ccTool>
           <developmentMode>5</developmentMode>
           <standard>11</standard>
+          <commandLine>-shared-libgcc</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -117,13 +151,33 @@
       </item>
       <item path="environment.hpp" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="eval.hpp" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="eval_simple.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="eval_simple.hpp" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="excepts.hpp" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="parser.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="parser.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="repl.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="repl.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="stdlib.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="stdlib.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="stdlib/conio.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="stdlib/debug.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="stdlib/operators.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="version.hpp" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

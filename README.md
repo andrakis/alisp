@@ -29,6 +29,15 @@ On Linux - Cross Platform OpenRISC: `make CONF=Release CND_PLATFORM=or1000 CXX=o
 
 On Visual Studio: Open `alisp.vcxproj` and compile.
 
+Useful Resources
+----------------
+
+The following resources were invaluable in overcoming the many obstacles C++ likes to put in your way:
+
+* [The C++ slicing problem](https://stackoverflow.com/questions/45259360/can-we-outsmart-object-slicing) - avoiding object slicing using smart pointers
+
+* [GCC not catching exceptions](https://stackoverflow.com/questions/2424836/exceptions-are-not-caught-in-gcc-program) - why your `catch` clauses aren't catching under gcc
+
 History
 -------
 

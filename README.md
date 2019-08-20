@@ -41,6 +41,14 @@ The following resources were invaluable in overcoming the many obstacles C++ lik
 History
 -------
 
+(Some versions not in separate commits)
+
+* 0.66 - Add runtime bounds/arguments checking; StringCell has ListCell-like behaviours; memory leak fixed
+
+* 0.60 - Add timekeeping; debugging, parsing, and evaluation functions; load file specified on command line and execute
+
+* 0.50 - Add standard library of functions; command line parsing; StringTypeCell attempts to parse into number values
+
 * 0.40 - Added REPL, exception handling
 
 * 0.32 - Working eval loop, parsing; G++ fixes; Makefile included

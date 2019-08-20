@@ -27,6 +27,8 @@
       <logicalFolder name="f1" displayName="stdlib" projectFiles="true">
         <itemPath>stdlib/conio.cpp</itemPath>
         <itemPath>stdlib/debug.cpp</itemPath>
+        <itemPath>stdlib/file.cpp</itemPath>
+        <itemPath>stdlib/libcore.cpp</itemPath>
         <itemPath>stdlib/operators.cpp</itemPath>
       </logicalFolder>
       <itemPath>ALisp.cpp</itemPath>
@@ -37,6 +39,7 @@
       <itemPath>parser.cpp</itemPath>
       <itemPath>repl.cpp</itemPath>
       <itemPath>stdlib.cpp</itemPath>
+      <itemPath>tests.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -106,7 +109,13 @@
       </item>
       <item path="stdlib/debug.cpp" ex="false" tool="1" flavor2="0">
       </item>
+      <item path="stdlib/file.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="stdlib/libcore.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="stdlib/operators.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="version.hpp" ex="false" tool="3" flavor2="0">
       </item>
@@ -175,7 +184,13 @@
       </item>
       <item path="stdlib/debug.cpp" ex="false" tool="1" flavor2="0">
       </item>
+      <item path="stdlib/file.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="stdlib/libcore.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="stdlib/operators.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="version.hpp" ex="false" tool="3" flavor2="0">
       </item>

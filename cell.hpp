@@ -1,15 +1,25 @@
 #pragma once
 
+#include <iomanip>
 #include <memory>
 #include <ostream>
 #include <type_traits>
 #include <string>
 #include <sstream>
+#include <tuple>
 
 #include "acore.hpp"
 #include "atoms.hpp"
 
 namespace ALisp {
+	template<typename T>
+	std::tuple<bool, T> tryStringToNumber(const std::string &str) {
+		T value;
+		std::stringstream stream(str);
+		stream >> value;
+		return std::make_tuple(!stream.fail(), value);
+	}
+
 	enum CellType {
 		None,
 		Atom,
@@ -76,6 +86,16 @@ namespace ALisp {
 			virtual void lambda_args(const Cell &ptr) EXCEPT { throw Exception("Not a lambda-like"); }
 			virtual Cell lambda_body() const EXCEPT { throw Exception("Not a lambda-like"); }
 			virtual void lambda_body(const Cell &ptr) EXCEPT { throw Exception("Not a lambda-like"); }
+
+			template<typename T>
+			StringType hex(T value) const {
+				std::stringbuf buf;
+				std::ostream os(&buf);
+
+				os << "0x" << std::setfill('0') << std::setw(sizeof(T) * 2)
+					<< std::hex << value;
+				return buf.str();
+			}
 		protected:
 			CellType _type;
 		};
@@ -252,27 +272,70 @@ namespace ALisp {
 
 	template<typename ValueType = StringType, CellType CellTypeType = CellType::String>
 	struct StringTypeCell : Cell {
+		struct IStringCell;
+		template<typename T>
+		StringTypeCell(T value)
+			: Cell(std::make_unique<IStringCell>(value)) {}
+		template<typename B, typename E>
+		StringTypeCell(B begin, E end)
+			: Cell(std::make_unique<IStringCell>(begin, end)) {}
+
 		struct IStringCell : ICell {
-			IStringCell(ValueType value) :
+			template<typename T>
+			IStringCell(T value) :
 				ICell(CellTypeType),
 				_value(value) {}
+			IStringCell(const char value) :
+				ICell(CellTypeType),
+				_value(StringType(1, value)) {}
+			template<typename B, typename E>
+			IStringCell(B begin, E end) :
+				ICell(CellTypeType),
+				_value(begin, end) {}
 
 			std::unique_ptr<ICell> clone() const final override {
 				return std::make_unique<IStringCell>(_value);
 			}
 
+			IntegerType integerValue() const EXCEPT final override {
+				auto isInteger = tryStringToNumber<IntegerType>(_value);
+				if (std::get<0>(isInteger))
+					return std::get<1>(isInteger);
+				else throw Exception("Failed to convert to integer: " + str());
+			}
+			FloatType floatValue() const EXCEPT final override {
+				auto isFloat = tryStringToNumber<FloatType>(_value);
+				if (std::get<0>(isFloat))
+					return std::get<1>(isFloat);
+				else throw Exception("Failed to convert to float: " + str());
+			}
 			StringType str() const final override { return _value; }
 
 			void add(const Cell &other) EXCEPT final override { _value += other.str(); }
 			bool equals(const Cell &other) const final override {
 				return other.str() == _value;
 			}
+
+			// List functions
+			Cell head() const EXCEPT final override {
+				if (_value == "") return Nil;
+				return StringTypeCell<ValueType, CellTypeType>(_value[0]);
+			}
+			Cell tail() const EXCEPT final override {
+				if (_value == "") return Nil;
+				return StringTypeCell<ValueType, CellTypeType>(_value.substr(1));
+			}
+			Cell index(size_t i) const EXCEPT final override {
+				if (i >= _value.size())
+					throw Exception("Index out of range");
+				return StringTypeCell<ValueType, CellTypeType>(_value[i]);
+			}
+			size_t size() const EXCEPT final override { return _value.length(); }
+			bool size_atleast(size_t i) const EXCEPT final override { return i < size(); }
+			bool empty() const EXCEPT final override { return _value == ""; }
 		protected:
 			ValueType _value;
 		};
-
-		StringTypeCell(ValueType value)
-			: Cell(std::make_unique<IStringCell>(value)) {}
 	};
 
 	template<typename ValueType, CellType CellTypeType>
@@ -404,8 +467,8 @@ namespace ALisp {
 			ValueType _value;
 			StringType stringOpen() const {
 				switch (type()) {
-					case CellType::Lambda: return "(#Lambda "; 
-					case CellType::Macro: return "(#Macro "; 
+					case CellType::Lambda: return "(#ref:lambda "; 
+					case CellType::Macro: return "(#ref:macro "; 
 					default: return "(";
 				}
 			}
@@ -429,7 +492,11 @@ namespace ALisp {
 				return std::make_unique<IProcTypeCell>(_proc);
 			}
 
-			StringType str() const final override { return "(#Proc)"; }
+			StringType str() const final override {
+				StringType s = "(#ref:proc ";
+				s += hex(_proc) + ")";
+				return s;
+			}
 			bool equals(const Cell &other) const final override {
 				return other.type() == CellType::Proc && other.proc() == _proc;
 			}
@@ -452,7 +519,11 @@ namespace ALisp {
 				return std::make_unique<IProcEnvTypeCell>(_proc);
 			}
 
-			StringType str() const final override { return "(#ProcEnv)"; }
+			StringType str() const final override {
+				StringType s = "(#ref:procenv ";
+				s += hex(_proc) + ")";
+				return s;
+			}
 			bool equals(const Cell &other) const final override {
 				return other.type() == CellType::ProcEnv && other.proc_env() == _proc;
 			}
@@ -479,7 +550,11 @@ namespace ALisp {
 				return other.type() == CellType::EnvPointer && other.env() == _env;
 			}
 
-			StringType str() const final override { return "(#env)"; }
+			StringType str() const final override {
+				StringType s = "(#ref:env ";
+				s += hex(_env.get()) + ")";
+				return s;
+			}
 		protected:
 			EnvironmentType _env;
 		};

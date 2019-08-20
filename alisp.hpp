@@ -13,7 +13,6 @@
 #include "eval.hpp"
 #include "repl.hpp"
 #include "stdlib.hpp"
-#include "version.hpp"
 
 namespace ALisp {
 	// Error codes for alisp functions

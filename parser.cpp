@@ -1,5 +1,6 @@
 #include <ctype.h>
 
+#include "cell.hpp"
 #include "parser.hpp"
 
 namespace ALisp {

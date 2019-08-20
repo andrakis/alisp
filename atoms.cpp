@@ -10,6 +10,9 @@ namespace ALisp {
 			AtomType atom_counter = 0;
 		}
 
+		AtomType Count() {
+			return detail::atom_counter;
+		}
 		std::string ToString(AtomType id) EXCEPT {
 			auto it = detail::atom_to_string.find(id);
 			if (it != detail::atom_to_string.end())

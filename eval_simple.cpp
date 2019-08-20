@@ -78,15 +78,13 @@ namespace ALisp {
 				}
 				switch (proc.type()) {
 					case CellType::Lambda: {
-						Environment *env_ptr = new Environment(proc.lambda_args(), exps, proc.lambda_ptr().env());
-						EnvironmentType env_shared(env_ptr);
+						EnvironmentType env_shared = std::make_shared<Environment>(proc.lambda_args(), exps, proc.lambda_ptr().env());
 						env = EnvironmentCell(env_shared); // swap environments
 						x = proc.lambda_body();
 						goto recurse;
 					}
 					case CellType::Macro: {
-						Environment *env_ptr = new Environment(proc.lambda_args(), exps, proc.lambda_ptr().env());
-						EnvironmentType env_shared(env_ptr);
+						EnvironmentType env_shared = std::make_shared<Environment>(proc.lambda_args(), exps, proc.lambda_ptr().env());
 						EnvironmentCell env2(env_shared); // short life
 						x = eval(proc.lambda_body(), env2);
 						// env2 should deallocate here

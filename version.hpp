@@ -1,3 +1,3 @@
 #pragma once
 
-#define alisp_version_str "0.40"
+#define alisp_version_str "0.66(6)"

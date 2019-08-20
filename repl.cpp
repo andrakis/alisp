@@ -1,7 +1,7 @@
 #include <iostream>
-#include <vector>
 
 #include "alisp.hpp"
+#include "version.hpp"
 
 namespace ALisp {
 	namespace REPL {
@@ -41,8 +41,6 @@ namespace ALisp {
 			Eval::EvalType evaluator = Eval::Simple::eval;
 			ListType history;
 
-			Stdlib::add_stdlib(env);
-
 			invokeCommand("help", state);
 			while (state.exit == false) {
 				if (state.continuation)
@@ -80,8 +78,6 @@ namespace ALisp {
 					std::cerr << "Key not found: " << e.what() << std::endl;
 				} catch (Exception &e) {
 					std::cerr << "Exception: " << e.what() << std::endl;
-				} catch (...) {
-					std::cerr << "C++ fucking sucks" << std::endl;
 				}
 			}
 		}

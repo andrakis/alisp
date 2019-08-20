@@ -97,5 +97,7 @@ namespace ALisp {
 				return _outer->get(key);
 			throw KeyNotFoundException(key);
 		}
+
+		void clear() { _map.clear(); if (has_parent()) _outer->clear(); }
 	};
 }

@@ -56,6 +56,7 @@ namespace ALisp {
 	typedef double FloatType;
 	typedef std::vector<Cell> ListType;
 	typedef std::shared_ptr<Environment> EnvironmentType;
+	typedef std::weak_ptr<Environment> EnvironmentReference;
 
 	// Callable function types
 	typedef Cell(*ProcType)(const ListType &args);

@@ -5,6 +5,12 @@
 #include <iostream>
 
 #include "../alisp.hpp"
+#include "../stdlib.hpp"
+#include "../parser.hpp"
+#include "../eval.hpp"
+#include "../repl.hpp"
+
+void test(); // tests.cpp
 
 namespace ALisp {
 	namespace Stdlib {
@@ -31,6 +37,35 @@ namespace ALisp {
 				--depth;
 			}
 			return Nil;
+		}
+
+		Cell run_tests(const ListType &args) {
+			test();
+			return Nil;
+		}
+
+		Cell debug_repl(const ListType &args, EnvironmentType env) {
+			REPL::REPL(EnvironmentCell(env));
+			return Nil;
+		}
+
+		// Debug parsing function
+
+		// (debug:parse Content) -> cells()
+		Cell debug_parse(const ListType &args) {
+			RUNTIME_CHECK(args, runtime_check::has_one_argument);
+			return Parser::read(args[0].str());
+		}
+		// (debug:eval Content) -> cell()
+		Cell debug_eval(const ListType &args, EnvironmentType env) {
+			RUNTIME_CHECK(args, runtime_check::has_atleast_one_argument);
+			Cell env_used;
+
+			if (runtime_check::has_two_arguments(args))
+				env_used = args[1];
+			else
+				env_used = EnvironmentCell(env);
+			return Eval::Simple::eval(args[0], env_used);
 		}
 	}
 }

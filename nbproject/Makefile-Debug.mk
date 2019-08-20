@@ -45,7 +45,10 @@ OBJECTFILES= \
 	${OBJECTDIR}/stdlib.o \
 	${OBJECTDIR}/stdlib/conio.o \
 	${OBJECTDIR}/stdlib/debug.o \
-	${OBJECTDIR}/stdlib/operators.o
+	${OBJECTDIR}/stdlib/file.o \
+	${OBJECTDIR}/stdlib/libcore.o \
+	${OBJECTDIR}/stdlib/operators.o \
+	${OBJECTDIR}/tests.o
 
 
 # C Compiler Flags
@@ -122,10 +125,25 @@ ${OBJECTDIR}/stdlib/debug.o: stdlib/debug.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/debug.o stdlib/debug.cpp
 
+${OBJECTDIR}/stdlib/file.o: stdlib/file.cpp
+	${MKDIR} -p ${OBJECTDIR}/stdlib
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/file.o stdlib/file.cpp
+
+${OBJECTDIR}/stdlib/libcore.o: stdlib/libcore.cpp
+	${MKDIR} -p ${OBJECTDIR}/stdlib
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/libcore.o stdlib/libcore.cpp
+
 ${OBJECTDIR}/stdlib/operators.o: stdlib/operators.cpp
 	${MKDIR} -p ${OBJECTDIR}/stdlib
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/operators.o stdlib/operators.cpp
+
+${OBJECTDIR}/tests.o: tests.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/tests.o tests.cpp
 
 # Subprojects
 .build-subprojects:

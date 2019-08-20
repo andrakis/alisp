@@ -126,8 +126,11 @@
     <ClCompile Include="repl.cpp" />
     <ClCompile Include="stdlib.cpp" />
     <ClCompile Include="stdlib\conio.cpp" />
+    <ClCompile Include="stdlib\libcore.cpp" />
     <ClCompile Include="stdlib\debug.cpp" />
+    <ClCompile Include="stdlib\file.cpp" />
     <ClCompile Include="stdlib\operators.cpp" />
+    <ClCompile Include="tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acore.hpp" />
@@ -141,6 +144,7 @@
     <ClInclude Include="parser.hpp" />
     <ClInclude Include="repl.hpp" />
     <ClInclude Include="stdlib.hpp" />
+    <ClInclude Include="timekeeping.hpp" />
     <ClInclude Include="version.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

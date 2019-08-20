@@ -21,6 +21,7 @@
 
 #include "alisp.hpp"
 #include "stdlib.hpp"
+#include "repl.hpp"
 #include "timekeeping.hpp"
 #include "version.hpp"
 
@@ -152,7 +153,10 @@ int main(int argc, char **argv) {
 	}
 
 	auto clear_time = Timekeeping::timeCall([&ec] () {
+		// Clear environment
 		ec.env()->clear();
+		// Also clear REPL
+		REPL::shutdown_repl();
 	});
 	if (MainState.timing)
 		std::cerr << "(tmg) Cleanup took " << clear_time << Timekeeping::time_type() << std::endl;

@@ -1,6 +1,8 @@
 #include <iostream>
 
 #include "alisp.hpp"
+#include "repl.hpp"
+#include "stdlib.hpp"
 
 using namespace ALisp;
 using namespace Atoms;

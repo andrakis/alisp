@@ -1,1 +1,10 @@
 *.o
+*.obj
+*.o.d
+*.swp
+history
+.vs/*
+Debug/*
+Release/*
+stage/
+dist/

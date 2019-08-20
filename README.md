@@ -43,7 +43,7 @@ History
 
 (Some versions not in separate commits)
 
-* 0.66 - Add runtime bounds/arguments checking; StringCell has ListCell-like behaviours; memory leak fixed
+* 0.66 - Add runtime bounds/arguments checking; StringCell has ListCell-like behaviours; memory leak fixed; added linenoise-ng; split into new repo
 
 * 0.60 - Add timekeeping; debugging, parsing, and evaluation functions; load file specified on command line and execute
 

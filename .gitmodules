@@ -1,0 +1,3 @@
+[submodule "contrib/linenoise-ng"]
+	path = contrib/linenoise-ng
+	url = https://github.com/arangodb/linenoise-ng

@@ -11,8 +11,6 @@
 #include "environment.hpp"
 #include "parser.hpp"
 #include "eval.hpp"
-#include "repl.hpp"
-#include "stdlib.hpp"
 
 namespace ALisp {
 	// Error codes for alisp functions

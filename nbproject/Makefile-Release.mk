@@ -38,6 +38,9 @@ OBJECTFILES= \
 	${OBJECTDIR}/ALisp.o \
 	${OBJECTDIR}/atoms.o \
 	${OBJECTDIR}/cell.o \
+	${OBJECTDIR}/contrib/linenoise-ng/src/ConvertUTF.o \
+	${OBJECTDIR}/contrib/linenoise-ng/src/linenoise.o \
+	${OBJECTDIR}/contrib/linenoise-ng/src/wcwidth.o \
 	${OBJECTDIR}/core.o \
 	${OBJECTDIR}/eval_simple.o \
 	${OBJECTDIR}/parser.o \
@@ -78,72 +81,87 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/alisp.exe: ${OBJECTFILES}
 ${OBJECTDIR}/ALisp.o: ALisp.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ALisp.o ALisp.cpp
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ALisp.o ALisp.cpp
 
 ${OBJECTDIR}/atoms.o: atoms.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/atoms.o atoms.cpp
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/atoms.o atoms.cpp
 
 ${OBJECTDIR}/cell.o: cell.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cell.o cell.cpp
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/cell.o cell.cpp
+
+${OBJECTDIR}/contrib/linenoise-ng/src/ConvertUTF.o: contrib/linenoise-ng/src/ConvertUTF.cpp
+	${MKDIR} -p ${OBJECTDIR}/contrib/linenoise-ng/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/contrib/linenoise-ng/src/ConvertUTF.o contrib/linenoise-ng/src/ConvertUTF.cpp
+
+${OBJECTDIR}/contrib/linenoise-ng/src/linenoise.o: contrib/linenoise-ng/src/linenoise.cpp
+	${MKDIR} -p ${OBJECTDIR}/contrib/linenoise-ng/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/contrib/linenoise-ng/src/linenoise.o contrib/linenoise-ng/src/linenoise.cpp
+
+${OBJECTDIR}/contrib/linenoise-ng/src/wcwidth.o: contrib/linenoise-ng/src/wcwidth.cpp
+	${MKDIR} -p ${OBJECTDIR}/contrib/linenoise-ng/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/contrib/linenoise-ng/src/wcwidth.o contrib/linenoise-ng/src/wcwidth.cpp
 
 ${OBJECTDIR}/core.o: core.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/core.o core.cpp
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/core.o core.cpp
 
 ${OBJECTDIR}/eval_simple.o: eval_simple.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/eval_simple.o eval_simple.cpp
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/eval_simple.o eval_simple.cpp
 
 ${OBJECTDIR}/parser.o: parser.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/parser.o parser.cpp
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/parser.o parser.cpp
 
 ${OBJECTDIR}/repl.o: repl.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/repl.o repl.cpp
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/repl.o repl.cpp
 
 ${OBJECTDIR}/stdlib.o: stdlib.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib.o stdlib.cpp
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib.o stdlib.cpp
 
 ${OBJECTDIR}/stdlib/conio.o: stdlib/conio.cpp
 	${MKDIR} -p ${OBJECTDIR}/stdlib
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/conio.o stdlib/conio.cpp
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/conio.o stdlib/conio.cpp
 
 ${OBJECTDIR}/stdlib/debug.o: stdlib/debug.cpp
 	${MKDIR} -p ${OBJECTDIR}/stdlib
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/debug.o stdlib/debug.cpp
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/debug.o stdlib/debug.cpp
 
 ${OBJECTDIR}/stdlib/file.o: stdlib/file.cpp
 	${MKDIR} -p ${OBJECTDIR}/stdlib
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/file.o stdlib/file.cpp
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/file.o stdlib/file.cpp
 
 ${OBJECTDIR}/stdlib/libcore.o: stdlib/libcore.cpp
 	${MKDIR} -p ${OBJECTDIR}/stdlib
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/libcore.o stdlib/libcore.cpp
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/libcore.o stdlib/libcore.cpp
 
 ${OBJECTDIR}/stdlib/operators.o: stdlib/operators.cpp
 	${MKDIR} -p ${OBJECTDIR}/stdlib
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/operators.o stdlib/operators.cpp
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/operators.o stdlib/operators.cpp
 
 ${OBJECTDIR}/tests.o: tests.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
-	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/tests.o tests.cpp
+	$(COMPILE.cc) -O2 -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/tests.o tests.cpp
 
 # Subprojects
 .build-subprojects:

@@ -20,32 +20,32 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{3A8E0361-7E9F-4784-A59E-03F4CCBEEEA2}</ProjectGuid>
-    <RootNamespace>alisp</RootNamespace>
+    <ProjectGuid>{5109AED4-EFCA-4B12-AA2E-C2EE75CA7DB5}</ProjectGuid>
+    <RootNamespace>linenoisengproject</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -70,29 +70,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp14</LanguageStandard>
-      <AdditionalIncludeDirectories>contrib/linenoise-ng/include</AdditionalIncludeDirectories>
-    </ClCompile>
-    <Link>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-    </Link>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>contrib/linenoise-ng/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../linenoise-ng/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -101,8 +86,25 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>contrib/linenoise-ng/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../linenoise-ng/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>../linenoise-ng/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -112,8 +114,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp14</LanguageStandard>
-      <AdditionalIncludeDirectories>contrib/linenoise-ng/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../linenoise-ng/include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -121,40 +123,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ALisp.cpp" />
-    <ClCompile Include="atoms.cpp" />
-    <ClCompile Include="cell.cpp" />
-    <ClCompile Include="core.cpp" />
-    <ClCompile Include="eval_simple.cpp" />
-    <ClCompile Include="parser.cpp" />
-    <ClCompile Include="repl.cpp" />
-    <ClCompile Include="stdlib.cpp" />
-    <ClCompile Include="stdlib\conio.cpp" />
-    <ClCompile Include="stdlib\libcore.cpp" />
-    <ClCompile Include="stdlib\debug.cpp" />
-    <ClCompile Include="stdlib\file.cpp" />
-    <ClCompile Include="stdlib\operators.cpp" />
-    <ClCompile Include="tests.cpp" />
+    <ClCompile Include="..\linenoise-ng\src\ConvertUTF.cpp" />
+    <ClCompile Include="..\linenoise-ng\src\linenoise.cpp" />
+    <ClCompile Include="..\linenoise-ng\src\wcwidth.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="acore.hpp" />
-    <ClInclude Include="alisp.hpp" />
-    <ClInclude Include="atoms.hpp" />
-    <ClInclude Include="cell.hpp" />
-    <ClInclude Include="environment.hpp" />
-    <ClInclude Include="eval.hpp" />
-    <ClInclude Include="eval_simple.hpp" />
-    <ClInclude Include="excepts.hpp" />
-    <ClInclude Include="parser.hpp" />
-    <ClInclude Include="repl.hpp" />
-    <ClInclude Include="stdlib.hpp" />
-    <ClInclude Include="timekeeping.hpp" />
-    <ClInclude Include="version.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="contrib\linenoise-ng-project\linenoise-ng-project.vcxproj">
-      <Project>{5109aed4-efca-4b12-aa2e-c2ee75ca7db5}</Project>
-    </ProjectReference>
+    <ClInclude Include="..\linenoise-ng\include\linenoise.h" />
+    <ClInclude Include="..\linenoise-ng\src\ConvertUTF.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

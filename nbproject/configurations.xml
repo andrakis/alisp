@@ -12,6 +12,7 @@
       <itemPath>eval.hpp</itemPath>
       <itemPath>eval_simple.hpp</itemPath>
       <itemPath>excepts.hpp</itemPath>
+      <itemPath>contrib/linenoise-ng/include/linenoise.h</itemPath>
       <itemPath>parser.hpp</itemPath>
       <itemPath>repl.hpp</itemPath>
       <itemPath>stdlib.hpp</itemPath>
@@ -32,14 +33,18 @@
         <itemPath>stdlib/operators.cpp</itemPath>
       </logicalFolder>
       <itemPath>ALisp.cpp</itemPath>
+      <itemPath>contrib/linenoise-ng/src/ConvertUTF.cpp</itemPath>
+      <itemPath>contrib/linenoise-ng/src/ConvertUTF.h</itemPath>
       <itemPath>atoms.cpp</itemPath>
       <itemPath>cell.cpp</itemPath>
       <itemPath>core.cpp</itemPath>
       <itemPath>eval_simple.cpp</itemPath>
+      <itemPath>contrib/linenoise-ng/src/linenoise.cpp</itemPath>
       <itemPath>parser.cpp</itemPath>
       <itemPath>repl.cpp</itemPath>
       <itemPath>stdlib.cpp</itemPath>
       <itemPath>tests.cpp</itemPath>
+      <itemPath>contrib/linenoise-ng/src/wcwidth.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -62,8 +67,16 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <cTool>
+          <incDir>
+            <pElem>contrib/linenoise-ng/include</pElem>
+          </incDir>
+        </cTool>
         <ccTool>
           <standard>11</standard>
+          <incDir>
+            <pElem>contrib/linenoise-ng/include</pElem>
+          </incDir>
           <commandLine>-shared-libgcc</commandLine>
         </ccTool>
       </compileType>
@@ -80,6 +93,31 @@
       <item path="cell.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="cell.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="contrib/linenoise-ng/include/linenoise.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="contrib/linenoise-ng/src/ConvertUTF.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="contrib/linenoise-ng/src/ConvertUTF.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="contrib/linenoise-ng/src/linenoise.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="contrib/linenoise-ng/src/wcwidth.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
       </item>
       <item path="core.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -129,10 +167,16 @@
       <compileType>
         <cTool>
           <developmentMode>5</developmentMode>
+          <incDir>
+            <pElem>contrib/linenoise-ng/include</pElem>
+          </incDir>
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
           <standard>11</standard>
+          <incDir>
+            <pElem>contrib/linenoise-ng/include</pElem>
+          </incDir>
           <commandLine>-shared-libgcc</commandLine>
         </ccTool>
         <fortranCompilerTool>
@@ -155,6 +199,31 @@
       <item path="cell.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="cell.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="contrib/linenoise-ng/include/linenoise.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="contrib/linenoise-ng/src/ConvertUTF.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="contrib/linenoise-ng/src/ConvertUTF.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="contrib/linenoise-ng/src/linenoise.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="contrib/linenoise-ng/src/wcwidth.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
       </item>
       <item path="core.cpp" ex="false" tool="1" flavor2="0">
       </item>

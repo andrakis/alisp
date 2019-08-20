@@ -1,6 +1,10 @@
 #include <iostream>
+#include <string.h>
+
+#include <linenoise.h>
 
 #include "alisp.hpp"
+#include "repl.hpp"
 #include "version.hpp"
 
 namespace ALisp {
@@ -36,18 +40,74 @@ namespace ALisp {
 			Command()
 		};
 
+		EnvironmentReference last_env;
+		bool linenoise_initialized = false;
+		const char *linenoise_history = "./history";
+		void completion_hook(char const *prefix, linenoiseCompletions *lc) {
+			size_t len = strlen(prefix);
+
+			// Add REPL commands
+			for (auto it = &replCommands[0]; it->valid(); ++it) {
+				if (!strncmp(it->command.c_str(), prefix, len))
+					linenoiseAddCompletion(lc, it->command.c_str());
+			}
+
+			// Add environment atoms.
+			// These require a reference to the current environment
+			if (auto env = last_env.lock()) {
+				auto e = env;
+				for (;;) {
+					for (auto it = e->cbegin(); it != e->cend(); ++it) {
+						Cell atom = Atoms::Get(it->first);
+						if (!strncmp(atom.str().c_str(), prefix, len)) {
+							// Got a partial match
+							linenoiseAddCompletion(lc, atom.str().c_str());
+						}
+					}
+					if (!e->has_parent())
+						break;
+					e = e->get_parent();
+				}
+			}
+		}
+
+		void check_linenoise() {
+			if (linenoise_initialized) return;
+			
+			linenoiseInstallWindowChangeHandler();
+			linenoiseHistoryLoad(linenoise_history);
+			linenoiseSetCompletionCallback(completion_hook);
+
+			linenoise_initialized = true;
+		}
+		void shutdown_repl() {
+			if (!linenoise_initialized) return;
+
+			linenoiseHistorySave(linenoise_history);
+			linenoiseHistoryFree();
+		}
+
 		void REPL(Cell env) {
 			State state;
 			Eval::EvalType evaluator = Eval::Simple::eval;
 			ListType history;
+			last_env = env.env();
+
+			check_linenoise();
 
 			invokeCommand("help", state);
 			while (state.exit == false) {
+				const char *prompt = state.prompt.c_str();
 				if (state.continuation)
-					std::cout << " ... ";
-				else
-					std::cout << state.prompt;
-				StringType line; std::getline(std::cin, line);
+					prompt = state.prompt_continuation.c_str();
+				char *line_result = linenoise(prompt);
+				if (line_result == NULL)
+					break;
+
+				StringType line(line_result);
+				// No longer need string allocated
+				free(line_result);
+
 				if (state.continuation) {
 					line = state.continued_line + line;
 					state.continuation = false;
@@ -69,7 +129,10 @@ namespace ALisp {
 					continue;
 				}
 
-				// Parsed successfully, execute
+				// Parsed successfully, save and execute
+				linenoiseHistoryAdd(line.c_str());
+
+				// Execute
 				try {
 					Cell result = evaluator(read, env);
 					history.push_back(result);
@@ -80,6 +143,8 @@ namespace ALisp {
 					std::cerr << "Exception: " << e.what() << std::endl;
 				}
 			}
+
+			last_env.reset();
 		}
 	}
 }

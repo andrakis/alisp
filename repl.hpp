@@ -7,10 +7,12 @@ namespace ALisp {
 		struct State {
 			bool exit = false;
 			bool continuation = false;
-			StringType prompt;
+			StringType prompt = "\x1b[1;32malisp\x1b[0m> ";
+			StringType prompt_continuation = "\x1b[1;32m  ...\x1b[0m> ";
 			StringType continued_line;
 
-			State(StringType prompt = "> ") : prompt(prompt) {}
+			State() {}
+			State(StringType _prompt) : prompt(_prompt) {}
 		};
 		typedef void(*Modifier)(State&);
 
@@ -26,5 +28,6 @@ namespace ALisp {
 		Command *getCommand(StringType cmd);
 		void invokeCommand(StringType cmd, State &);
 		void REPL(Cell env);
+		void shutdown_repl();
 	}
 }

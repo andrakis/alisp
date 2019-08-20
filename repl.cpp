@@ -39,12 +39,22 @@ namespace ALisp {
 			Command("\\q", _exit),
 			Command()
 		};
+		const char *builtins[] = {
+			"quote", "if", "define", "set!", "lambda", "macro", "begin",
+			NULL
+		};
 
 		EnvironmentReference last_env;
 		bool linenoise_initialized = false;
 		const char *linenoise_history = "./history";
 		void completion_hook(char const *prefix, linenoiseCompletions *lc) {
 			size_t len = strlen(prefix);
+			
+			// Add builtins
+			for(size_t i = 0; builtins[i] != NULL; ++i) {
+				if (!strncmp(builtins[i], prefix, len))
+					linenoiseAddCompletion(lc, builtins[i]);
+			}
 
 			// Add REPL commands
 			for (auto it = &replCommands[0]; it->valid(); ++it) {

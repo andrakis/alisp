@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3b6efb78-7e31-41ec-80b4-90dd5481a3af}</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <ProjectView>ShowAllFiles</ProjectView>
+    <StartupFile>index.js</StartupFile>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">14.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <LastActiveSolutionConfig>Debug|Any CPU</LastActiveSolutionConfig>
+    <ScriptArguments>-T</ScriptArguments>
+    <StartWebBrowser>False</StartWebBrowser>
+    <SaveNodeJsSettingsInProjectFile>True</SaveNodeJsSettingsInProjectFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include="lisp\arguments.lisp" />
+    <Content Include="lisp\deval.lisp">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="lisp\fac.lisp" />
+    <Content Include="lisp\init.lisp" />
+    <Content Include="lisp\macros.lisp" />
+    <Content Include="lisp\set.lisp" />
+    <Content Include="lisp\test.lisp" />
+    <Content Include="package.json" />
+    <Content Include="README.md" />
+    <Content Include="index.js" />
+    <Content Include="lib\alisp.js" />
+    <Content Include="lib\atoms.js" />
+    <Content Include="lib\environment.js" />
+    <Content Include="lib\errcodes.js" />
+    <Content Include="lib\interpreter.js" />
+    <Content Include="lib\isx.js" />
+    <Content Include="lib\parser.js" />
+    <Content Include="lib\process.js" />
+    <Content Include="lib\tests.js" />
+    <Content Include="lib\types.js" />
+    <Content Include="lib\version.js" />
+    <Content Include="nbproject\configurations.xml" />
+    <Content Include="nbproject\project.xml" />
+    <Content Include="contrib\linenoise-ng\CMakeLists.txt" />
+    <Content Include="contrib\linenoise-ng\README.md" />
+    <Content Include="nbproject\private\configurations.xml" />
+    <Content Include="nbproject\private\private.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ALisp-Node" />
+    <Folder Include="build" />
+    <Folder Include="build\Debug" />
+    <Folder Include="build\Debug\Cygwin_x86_64-Windows" />
+    <Folder Include="build\Debug\Cygwin_x86_64-Windows\contrib" />
+    <Folder Include="build\Debug\Cygwin_x86_64-Windows\contrib\linenoise-ng" />
+    <Folder Include="build\Debug\Cygwin_x86_64-Windows\contrib\linenoise-ng\src" />
+    <Folder Include="build\Debug\Cygwin_x86_64-Windows\stdlib" />
+    <Folder Include="build\Release" />
+    <Folder Include="build\Release\or1000" />
+    <Folder Include="build\Release\or1000\contrib" />
+    <Folder Include="build\Release\or1000\contrib\linenoise-ng" />
+    <Folder Include="build\Release\or1000\contrib\linenoise-ng\src" />
+    <Folder Include="build\Release\or1000\stdlib" />
+    <Folder Include="contrib" />
+    <Folder Include="contrib\linenoise-ng" />
+    <Folder Include="contrib\linenoise-ng\include" />
+    <Folder Include="contrib\linenoise-ng\src" />
+    <Folder Include="contrib\linenoise-ng\tst" />
+    <Folder Include="contrib\linenoise-ng-project" />
+    <Folder Include="contrib\linenoise-ng-project\Debug" />
+    <Folder Include="contrib\linenoise-ng-project\Debug\linenois.5109AED4.tlog" />
+    <Folder Include="Debug" />
+    <Folder Include="Debug\alisp.tlog" />
+    <Folder Include="dist" />
+    <Folder Include="dist\Debug" />
+    <Folder Include="dist\Debug\Cygwin_x86_64-Windows" />
+    <Folder Include="dist\Release" />
+    <Folder Include="dist\Release\Cygwin_x86_64-Windows" />
+    <Folder Include="dist\Release\or1000" />
+    <Folder Include="lib" />
+    <Folder Include="lib\stdlib\" />
+    <Folder Include="lisp" />
+    <Folder Include="nbproject" />
+    <Folder Include="nbproject\private" />
+    <Folder Include="stage" />
+    <Folder Include="stage\or1000" />
+    <Folder Include="stage\or1000\lisp" />
+    <Folder Include="stdlib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="lib\errors.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\repl.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\runtime.js" />
+    <Compile Include="lib\stdlib.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\stdlib\conio.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\stdlib\core.js" />
+    <Compile Include="lib\stdlib\environment.js" />
+    <Compile Include="lib\stdlib\file.js" />
+    <Compile Include="lib\stdlib\operators.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\stdlib\strings.js">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

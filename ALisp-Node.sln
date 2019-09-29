@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.779
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "ALisp-Node", "ALisp-Node.njsproj", "{3B6EFB78-7E31-41EC-80B4-90DD5481A3AF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3B6EFB78-7E31-41EC-80B4-90DD5481A3AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B6EFB78-7E31-41EC-80B4-90DD5481A3AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B6EFB78-7E31-41EC-80B4-90DD5481A3AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B6EFB78-7E31-41EC-80B4-90DD5481A3AF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C6E6C1EE-C92D-4C29-AB39-ACB96AC249AD}
+	EndGlobalSection
+EndGlobal

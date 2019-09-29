@@ -23,7 +23,7 @@
 	(define a 1)
 	(do (<= a 10) (begin
 		(print a)
-		(set! a (+ a 1))
+		(inc! a)
 	))
 
 )

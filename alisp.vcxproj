@@ -130,10 +130,12 @@
     <ClCompile Include="repl.cpp" />
     <ClCompile Include="stdlib.cpp" />
     <ClCompile Include="stdlib\conio.cpp" />
+    <ClCompile Include="stdlib\env.cpp" />
     <ClCompile Include="stdlib\libcore.cpp" />
     <ClCompile Include="stdlib\debug.cpp" />
     <ClCompile Include="stdlib\file.cpp" />
     <ClCompile Include="stdlib\operators.cpp" />
+    <ClCompile Include="stdlib\strings.cpp" />
     <ClCompile Include="tests.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -141,6 +143,7 @@
     <ClInclude Include="alisp.hpp" />
     <ClInclude Include="atoms.hpp" />
     <ClInclude Include="cell.hpp" />
+    <ClInclude Include="contrib\TextUtils.h" />
     <ClInclude Include="environment.hpp" />
     <ClInclude Include="eval.hpp" />
     <ClInclude Include="eval_simple.hpp" />
@@ -155,6 +158,13 @@
     <ProjectReference Include="contrib\linenoise-ng-project\linenoise-ng-project.vcxproj">
       <Project>{5109aed4-efca-4b12-aa2e-c2ee75ca7db5}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="lisp\deval.lisp" />
+    <None Include="lisp\fac.lisp" />
+    <None Include="lisp\init.lisp" />
+    <None Include="lisp\macros.lisp" />
+    <None Include="lisp\test.lisp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

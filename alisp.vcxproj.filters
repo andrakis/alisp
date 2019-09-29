@@ -16,6 +16,9 @@
     <Filter Include="Source Files\stdlib">
       <UniqueIdentifier>{2104c420-b99d-4d84-b72a-719b763f91f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lisp">
+      <UniqueIdentifier>{aeb502de-12aa-49c5-8e7f-d01115e0569e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ALisp.cpp">
@@ -60,6 +63,12 @@
     <ClCompile Include="stdlib\libcore.cpp">
       <Filter>Source Files\stdlib</Filter>
     </ClCompile>
+    <ClCompile Include="stdlib\strings.cpp">
+      <Filter>Source Files\stdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="stdlib\env.cpp">
+      <Filter>Source Files\stdlib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="alisp.hpp">
@@ -101,5 +110,25 @@
     <ClInclude Include="timekeeping.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="contrib\TextUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="lisp\deval.lisp">
+      <Filter>lisp</Filter>
+    </None>
+    <None Include="lisp\fac.lisp">
+      <Filter>lisp</Filter>
+    </None>
+    <None Include="lisp\init.lisp">
+      <Filter>lisp</Filter>
+    </None>
+    <None Include="lisp\macros.lisp">
+      <Filter>lisp</Filter>
+    </None>
+    <None Include="lisp\test.lisp">
+      <Filter>lisp</Filter>
+    </None>
   </ItemGroup>
 </Project>

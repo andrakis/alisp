@@ -87,7 +87,7 @@ namespace ALisp {
 			// Note function signature: val is copied not referenced
 			if (has_key(key)) create(key, val);
 			else if (has_parent()) _outer->set(key, val);
-			throw KeyNotFoundException(key);
+			else throw KeyNotFoundException(key);
 		}
 		Cell get(key_type key) EXCEPT {
 			auto it = find_key(key);

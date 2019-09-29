@@ -21,12 +21,15 @@ namespace ALisp {
 			ep->create(Declare("!="), ProcCell(nequal));
 			ep->create(Declare("<"), ProcCell(lessthan)); ep->create(Declare("<="), ProcCell(lessthanequal));
 			ep->create(Declare(">"), ProcCell(morethan)); ep->create(Declare(">="), ProcCell(morethanequal));
+			ep->create(Declare("not"), ProcCell(boolnot)); ep->create(Declare("nil?"), ProcCell(boolnil));
 			// debug.cpp
 			ep->create(Declare("penv"), ProcEnvCell(print_env));
 			ep->create(Declare("run_tests"), ProcCell(run_tests));
 			ep->create(Declare("debug:parse"), ProcCell(debug_parse));
 			ep->create(Declare("debug:eval"), ProcEnvCell(debug_eval));
 			ep->create(Declare("debug:repl"), ProcEnvCell(debug_repl));
+			// env.cpp
+			ep->create(Declare("env:defined"), ProcEnvCell(env_defined));
 			// file.cpp
 			ep->create(Declare("file:exists"), ProcCell(file_exists));
 			ep->create(Declare("file:path"), ProcCell(file_path));
@@ -38,6 +41,12 @@ namespace ALisp {
 			ep->create(Declare("size_atleast"), ProcCell(core_size_atleast));
 			ep->create(Declare("index"), ProcCell(core_index));
 			ep->create(Declare("list"), ProcCell(core_list));
+			ep->create(Declare("none"), ProcCell(core_none));
+			ep->create(Declare("atom"), ProcCell(core_atom));
+			ep->create(Declare("empty?"), ProcCell(core_empty));
+			// strings.cpp
+			ep->create(Declare("string:split"), ProcCell(strings_split));
+			ep->create(Declare("string:join"), ProcCell(strings_join));
 		}
 	}
 }

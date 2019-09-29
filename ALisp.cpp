@@ -43,23 +43,28 @@ struct {
 	}
 
 	void readFrom(int argc, char **argv) {
+		bool acceptArguments = true; // when false, push to arguments
 		int i = 1; ++argv;
 		while (i < argc) {
-			if (!strcmp(*argv, "--help") || !strcmp(*argv, "-h"))
-				help = true;
-			else if (!strcmp(*argv, "-i"))
-				interactive = true;
-			else if (!strcmp(*argv, "-t"))
-				timing = true;
-			else if (!strcmp(*argv, "-T"))
-				tests = true;
-			else if (!strcmp(*argv, "-d"))
-				debug = true;
-			else if (!has_file())
-				file = StringType(argv[0]);
-			else {
-				args.push_back(StringCell(StringType(argv[0])));
-			}
+			if (!strcmp(*argv, "--"))
+				acceptArguments = false;
+			if (acceptArguments) {
+				if (!strcmp(*argv, "--help") || !strcmp(*argv, "-h"))
+					help = true;
+				else if (!strcmp(*argv, "-i"))
+					interactive = true;
+				else if (!strcmp(*argv, "-t"))
+					timing = true;
+				else if (!strcmp(*argv, "-T"))
+					tests = true;
+				else if (!strcmp(*argv, "-d"))
+					debug = true;
+				else if (!has_file())
+					file = StringType(argv[0]);
+				else
+					args.push_back(Parser::read(StringType(*argv)));
+			} else
+					args.push_back(Parser::read(StringType(*argv)));
 			++i; ++argv;
 		}
 	}
@@ -73,7 +78,7 @@ void show_help() {
 	std::cerr << "ALisp v " << alisp_version_str << std::endl;
 	std::cerr << std::endl;
 	std::cerr << "Usage:" << std::endl;
-	std::cerr << "alisp [-i] [-t] [-T] [-D] [file] [args]" << std::endl;
+	std::cerr << "alisp [-i] [-t] [-T] [-d] [file] [args]" << std::endl;
 	std::cerr << "Where:" << std::endl;
 	std::cerr << "\t-i             Interactive mode (REPL)" << std::endl;
 	std::cerr << "\t-t             Display timing information" << std::endl;
@@ -102,6 +107,8 @@ int main(int argc, char **argv) {
 
 	EnvironmentCell ec(std::make_shared<Environment>());
 	Stdlib::add_stdlib(ec);
+	// Set argv in our environment
+	ec.env()->create(Atoms::Declare("argv"), ListCell(MainState.args));
 	auto after_stdlib = Atoms::Count();
 	if (MainState.debug)
 		std::cerr << "(dbg) " << (after_stdlib - after_startup) << " atoms created at add_stdlib." << std::endl;
@@ -109,21 +116,24 @@ int main(int argc, char **argv) {
 	if (MainState.help) {
 		MainState.did_anything = true;
 		show_help();
+		return 1;
 	} else if (MainState.tests) {
 		MainState.did_anything = true;
 		test();
-	} else if (MainState.interactive) {
-		MainState.did_anything = true;
-		REPL::REPL(ec);
-	} else if (MainState.has_file()) {
+	}
+	
+	if (MainState.has_file()) {
 		MainState.did_anything = true;
 		try {
+			// Find the full path to the file
 			Cell full_path = invoke_lib(file_path, StringCell(MainState.file));
 			if (invoke_lib(file_exists, full_path) == False) {
 				std::cerr << "Failed to open " << full_path << std::endl;
 				return 2;
 			}
+			// Read the file
 			Cell read = invoke_lib(file_read, full_path);
+			// Parse the read file
 			auto parse_call = Timekeeping::timeCallbackResult<Cell>([&read] () {
 				return Parser::read(read.str());
 			});
@@ -147,11 +157,15 @@ int main(int argc, char **argv) {
 			std::cerr << "Exception: " << e.what() << std::endl;
 			return 3;
 		} catch (...) {
-			std::cerr << "Unknown error occurred" << std::endl;
-			return 3;
+			std::cerr << "Unknown error occurred, exception details may follow" << std::endl;
+			throw;
 		}
 	}
 
+	if (MainState.interactive) {
+		MainState.did_anything = true;
+		REPL::REPL(ec);
+	}
 	auto clear_time = Timekeeping::timeCall([&ec] () {
 		// Clear environment
 		ec.env()->clear();
@@ -167,7 +181,7 @@ int main(int argc, char **argv) {
 	}
 
 	if (debugger_attached()) {
-		std::cerr << "Press enter to exit";
+		std::cerr << "(debugger attached) Press enter to exit";
 		while (std::cin.get() != '\n') /* Nothing */;
 	}
 	return 0;

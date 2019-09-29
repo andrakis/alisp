@@ -42,5 +42,19 @@ namespace ALisp {
 		Cell core_list(const ListType &args) {
 			return ListCell(args);
 		}
+		// (none) -> none()
+		Cell core_none(const ListType &args) {
+			return NoneCell();
+		}
+		// (atom Name) -> atom()
+		Cell core_atom(const ListType &args) {
+			RUNTIME_CHECK(args, runtime_check::has_one_argument);
+			return Atoms::Declare(args[0].str().c_str());
+		}
+		// (empty? List) -> bool()
+		Cell core_empty(const ListType &args) {
+			RUNTIME_CHECK(args, runtime_check::has_one_argument);
+			return args[0].empty() ? True : False;
+		}
 	}
 }

@@ -48,9 +48,11 @@ OBJECTFILES= \
 	${OBJECTDIR}/stdlib.o \
 	${OBJECTDIR}/stdlib/conio.o \
 	${OBJECTDIR}/stdlib/debug.o \
+	${OBJECTDIR}/stdlib/env.o \
 	${OBJECTDIR}/stdlib/file.o \
 	${OBJECTDIR}/stdlib/libcore.o \
 	${OBJECTDIR}/stdlib/operators.o \
+	${OBJECTDIR}/stdlib/strings.o \
 	${OBJECTDIR}/tests.o
 
 
@@ -143,6 +145,11 @@ ${OBJECTDIR}/stdlib/debug.o: stdlib/debug.cpp
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/debug.o stdlib/debug.cpp
 
+${OBJECTDIR}/stdlib/env.o: stdlib/env.cpp
+	${MKDIR} -p ${OBJECTDIR}/stdlib
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/env.o stdlib/env.cpp
+
 ${OBJECTDIR}/stdlib/file.o: stdlib/file.cpp
 	${MKDIR} -p ${OBJECTDIR}/stdlib
 	${RM} "$@.d"
@@ -157,6 +164,11 @@ ${OBJECTDIR}/stdlib/operators.o: stdlib/operators.cpp
 	${MKDIR} -p ${OBJECTDIR}/stdlib
 	${RM} "$@.d"
 	$(COMPILE.cc) -g -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/operators.o stdlib/operators.cpp
+
+${OBJECTDIR}/stdlib/strings.o: stdlib/strings.cpp
+	${MKDIR} -p ${OBJECTDIR}/stdlib
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Icontrib/linenoise-ng/include -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/stdlib/strings.o stdlib/strings.cpp
 
 ${OBJECTDIR}/tests.o: tests.cpp
 	${MKDIR} -p ${OBJECTDIR}

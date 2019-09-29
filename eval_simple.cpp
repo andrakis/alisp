@@ -69,9 +69,10 @@ namespace ALisp {
 				// (proc exp*)
 				const Cell proc = eval(x.index(0), env);
 				ListType exps;
-				if (proc.type() == CellType::Macro)
-					exps = ListType(x.tail().cbegin(), x.tail().cend());
-				else {
+				if (proc.type() == CellType::Macro) {
+					const Cell tail = x.tail();
+					exps = ListType(tail.cbegin(), tail.cend());
+				}  else {
 					// (map (tail x) (lambda (y) (eval y env)))
 					for (auto it = x.cbegin() + 1; it != x.cend(); ++it)
 						exps.push_back(eval(*it, env));

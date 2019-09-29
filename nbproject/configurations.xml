@@ -28,9 +28,11 @@
       <logicalFolder name="f1" displayName="stdlib" projectFiles="true">
         <itemPath>stdlib/conio.cpp</itemPath>
         <itemPath>stdlib/debug.cpp</itemPath>
+        <itemPath>stdlib/env.cpp</itemPath>
         <itemPath>stdlib/file.cpp</itemPath>
         <itemPath>stdlib/libcore.cpp</itemPath>
         <itemPath>stdlib/operators.cpp</itemPath>
+        <itemPath>stdlib/strings.cpp</itemPath>
       </logicalFolder>
       <itemPath>ALisp.cpp</itemPath>
       <itemPath>contrib/linenoise-ng/src/ConvertUTF.cpp</itemPath>
@@ -147,11 +149,15 @@
       </item>
       <item path="stdlib/debug.cpp" ex="false" tool="1" flavor2="0">
       </item>
+      <item path="stdlib/env.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="stdlib/file.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="stdlib/libcore.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="stdlib/operators.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="stdlib/strings.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -177,7 +183,7 @@
           <incDir>
             <pElem>contrib/linenoise-ng/include</pElem>
           </incDir>
-          <commandLine>-shared-libgcc</commandLine>
+          <commandLine>-shared-libgcc -flto -O3</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -185,6 +191,9 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <commandLine>-flto</commandLine>
+        </linkerTool>
       </compileType>
       <item path="ALisp.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -253,11 +262,15 @@
       </item>
       <item path="stdlib/debug.cpp" ex="false" tool="1" flavor2="0">
       </item>
+      <item path="stdlib/env.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="stdlib/file.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="stdlib/libcore.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="stdlib/operators.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="stdlib/strings.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="tests.cpp" ex="false" tool="1" flavor2="0">
       </item>

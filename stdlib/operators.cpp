@@ -86,5 +86,16 @@ namespace ALisp {
 			RUNTIME_CHECK(args, runtime_check::has_two_arguments);
 			return args[0] >= args[1] ? True : False;
 		}
+
+		// boolean functions
+		Cell boolnot(const ListType &args) {
+			RUNTIME_CHECK(args, runtime_check::has_one_argument);
+			return args[0] == False ? True : False;
+		}
+
+		Cell boolnil(const ListType &args) {
+			RUNTIME_CHECK(args, runtime_check::has_one_argument);
+			return args[0] == Nil ? True : False;
+		}
 	}
 }

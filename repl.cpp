@@ -12,6 +12,7 @@ namespace ALisp {
 		void _exit(State &state) { state.exit = true; }
 		void _help(State &state) {
 			std::cout << "ALisp v " alisp_version_str << std::endl;
+			std::cout << "Tab autocompletion available." << std::endl;
 			std::cout << "Available REPL commands: " << std::endl;
 			for (auto it = &replCommands[0]; it->valid(); ++it)
 				std::cout << "\t" << it->command;
@@ -146,7 +147,7 @@ namespace ALisp {
 				try {
 					Cell result = evaluator(read, env);
 					history.push_back(result);
-					std::cout << result << std::endl;
+					std::cout << result.repr() << std::endl;
 				} catch (KeyNotFoundException &e) {
 					std::cerr << "Key not found: " << e.what() << std::endl;
 				} catch (Exception &e) {

@@ -54,7 +54,8 @@ namespace ALisp {
 			virtual AtomType atomId() const EXCEPT { throw Exception("Not an atom"); }
 			virtual IntegerType integerValue() const EXCEPT { throw Exception("Not an integer"); }
 			virtual FloatType floatValue() const EXCEPT { throw Exception("Not a float"); }
-			virtual StringType str() const { return "TODO"; }
+			virtual StringType str() const = 0;
+			virtual StringType repr() const = 0;
 			virtual EnvironmentType env() EXCEPT { throw Exception("Not an environment"); }
 			virtual ProcType proc() const EXCEPT { throw Exception("Not a proc"); }
 			virtual ProcEnvType proc_env() const EXCEPT { throw Exception("Not a proc_env"); }
@@ -129,8 +130,12 @@ namespace ALisp {
 			return pImpl->floatValue();
 		}
 		StringType str() const {
-			if (!pImpl) return "";
+			if (!pImpl) return "<no_ptr_ref>";
 			return pImpl->str();
+		}
+		StringType repr() const {
+			if (!pImpl) return "<no_ptr_ref>";
+			return pImpl->repr();
 		}
 		EnvironmentType env() const EXCEPT {
 			if (!pImpl) return EnvironmentType(nullptr);
@@ -237,6 +242,7 @@ namespace ALisp {
 			}
 
 			StringType str() const final override { return "(none)"; }
+			StringType repr() const final override { return "(none)"; }
 			bool equals(const Cell &other) const final override {
 				return other.type() == CellType::None;
 			}
@@ -259,6 +265,12 @@ namespace ALisp {
 			AtomType atomId() const EXCEPT final override { return _value; }
 
 			StringType str() const final override { return Atoms::ToString(_value); }
+			StringType repr() const final override {
+				StringType r = "(atom \"";
+				r += str();
+				r += "\")";
+				return r;
+			}
 			bool equals(const Cell &other) const final override {
 				return other.type() == CellType::Atom && _value == other.atomId();
 			}
@@ -310,6 +322,7 @@ namespace ALisp {
 				else throw Exception("Failed to convert to float: " + str());
 			}
 			StringType str() const final override { return _value; }
+			StringType repr() const final override { return "\"" + _value + "\""; }
 
 			void add(const Cell &other) EXCEPT final override { _value += other.str(); }
 			bool equals(const Cell &other) const final override {
@@ -327,7 +340,7 @@ namespace ALisp {
 			}
 			Cell index(size_t i) const EXCEPT final override {
 				if (i >= _value.size())
-					throw Exception("Index out of range");
+					return Nil;
 				return StringTypeCell<ValueType, CellTypeType>(_value[i]);
 			}
 			size_t size() const EXCEPT final override { return _value.length(); }
@@ -358,6 +371,7 @@ namespace ALisp {
 			}
 
 			StringType str() const final override { return std::to_string(_value); }
+			StringType repr() const final override { return str(); }
 			bool equals(const Cell &other) const final override {
 				return (other.type() == CellType::Integer && (IntegerType)_value == other.integerValue()) ||
 					(other.type() == CellType::Float && (FloatType)_value == other.floatValue()) ||
@@ -413,16 +427,22 @@ namespace ALisp {
 				return std::make_unique<IListTypeCell>(_value.cbegin(), _value.cend());
 			}
 
-			StringType str() const final override {
+			StringType str_or_repr(bool str) const {
 				std::ostringstream ss;
-				ss << stringOpen();
+				ss << stringOpen(str);
 				for (auto it = _value.cbegin(); it != _value.cend(); ++it) {
 					if (it != _value.cbegin())
 						ss << " ";
-					ss << it->str();
+					ss << (str ? it->str() : it->repr());
 				}
 				ss << stringClose();
 				return ss.str();
+			}
+			StringType str() const final override {
+				return str_or_repr(true);
+			}
+			StringType repr() const final override {
+				return str_or_repr(false);
 			}
 			bool equals(const Cell &other) const final override {
 				if (type() != other.type()) return false;
@@ -449,11 +469,11 @@ namespace ALisp {
 			}
 			const_iterator cbegin() const EXCEPT final override { return _value.cbegin(); }
 			const_iterator cend() const EXCEPT final override { return _value.cend(); }
-			Cell index(size_t i) const EXCEPT {
+			Cell index(size_t i) const EXCEPT final override {
+				if (i >= size())
+					return Nil;
 				auto it = cbegin() + i;
-				if (it != cend())
-					return *it;
-				return Nil;
+				return *it;
 			}
 
 			// Lambda/macro functions
@@ -465,14 +485,17 @@ namespace ALisp {
 			void lambda_body(const Cell &body) EXCEPT final override { lm(); _value[lm_body] = body; }
 		protected:
 			ValueType _value;
-			StringType stringOpen() const {
+			StringType stringOpen(bool str_or_repr) const {
 				switch (type()) {
 					case CellType::Lambda: return "(#ref:lambda "; 
 					case CellType::Macro: return "(#ref:macro "; 
-					default: return "(";
+					case CellType::Tuple: return "(tuple ";
+					default: return (str_or_repr ? "(" : "(list ");
 				}
 			}
-			StringType stringClose() const { return ")"; }
+			StringType stringClose() const {
+				return ")";
+			}
 
 			static const size_t lm_ptr = 0, lm_args = 1, lm_body = 2, lm_required = 3;
 			// Helper function to reserve enough space for lambda values
@@ -493,10 +516,10 @@ namespace ALisp {
 			}
 
 			StringType str() const final override {
-				StringType s = "(#ref:proc ";
-				s += hex(_proc) + ")";
+				StringType s = "(#ref:proc:unknown)";
 				return s;
 			}
+			StringType repr() const final override { return str(); }
 			bool equals(const Cell &other) const final override {
 				return other.type() == CellType::Proc && other.proc() == _proc;
 			}
@@ -520,10 +543,10 @@ namespace ALisp {
 			}
 
 			StringType str() const final override {
-				StringType s = "(#ref:procenv ";
-				s += hex(_proc) + ")";
+				StringType s = "(#ref:procenv:unknown)";
 				return s;
 			}
+			StringType repr() const final override { return str(); }
 			bool equals(const Cell &other) const final override {
 				return other.type() == CellType::ProcEnv && other.proc_env() == _proc;
 			}
@@ -551,10 +574,10 @@ namespace ALisp {
 			}
 
 			StringType str() const final override {
-				StringType s = "(#ref:env ";
-				s += hex(_env.get()) + ")";
+				StringType s = "(#ref:env:unknown)";
 				return s;
 			}
+			StringType repr() const final override { return str(); }
 		protected:
 			EnvironmentType _env;
 		};

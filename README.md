@@ -28,6 +28,8 @@ How (to build)?
 
 * C++ version:
 
+  * NetBeans 8+: This repository is also a NetBeans project. The project was created with NetBeans 8.2 and older versions of NetBeans may not work with it.
+
   * On Linux:
 
     * Standard compile: `make CONF=Release`
@@ -48,9 +50,11 @@ How (to build)?
 
 * Node.js version:
 
-  * In any console run: `node index **options**`
+  * In any console run: <code>node index *[options]*</code>
   
 Pass `--help` on the command line for information on commandline options.
+
+See the [lisp](https://github.com/andrakis/alisp/tree/master/lisp) directory for samples than can be run.
   
 Useful Resources
 ----------------

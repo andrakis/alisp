@@ -49,7 +49,7 @@ namespace ALisp {
 			} else {
 				// Single key capturing multiple values
 				lt_keys.push_back(keys);
-				lt_values.insert(lt_values.end(), values.cbegin(), values.cend());
+				lt_values.push_back(ListCell(values.cbegin(), values.cend()));
 			}
 			addRange(lt_keys, lt_values);
 		}

@@ -5,13 +5,30 @@
 	(define def? (macro (sym) (list (quote env:defined) 
 		(list (quote quote) sym))))
 
-	;; Macro that implements a do loop.
+	;; Macro that implements a while loop.
+	;; (while [cond] [body])
 	;; Rewrites your code to:
 	;;   (if cond (begin body (do cond body)))
-	(define do (macro (cond body)
+	(define while (macro (cond body)
 		(list (quote if) cond (list (quote begin)
 			body
-			(list (quote do) cond body)))))
+			(list (quote while) cond body)))))
+
+	;; Macro that implements logical or.
+	;; This logical or is short-circuited, that is if the first condition
+	;; is met, the following conditions, if any, are not evaluated.
+	;; (or [cond] [rest...]) ->
+	;;   (if [cond] true (or [rest...]))
+	;; Note that this macro takes a variable number of arguments.
+	(define or (macro conds (begin
+		(if (empty? conds)
+			false
+			(begin ;; else
+				(print "Testing condition" (head conds))
+				;; (if cond true (or rest...))
+				(list (quote if) (head conds)
+					true
+					(+ (list (quote or)) (tail conds))))))))
 
 	;; Increment a variable.
 	(define inc! (macro (name value) (begin
@@ -21,9 +38,15 @@
 		(list (quote set!) name (list (quote +) name value)))))
 
 	(define a 1)
-	(do (<= a 10) (begin
-		(print a)
-		(inc! a)
-	))
+  	(while (<= a 10) (begin
+  		(print a)
+  		(inc! a)
+  	))
 
+	(print "or" (or
+		;; These will run
+		(= a 3) (= a 2) (= a 11)
+		;; These will not
+		(= a 5) (= a 4)
+	))
 )

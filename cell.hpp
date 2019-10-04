@@ -476,6 +476,16 @@ namespace ALisp {
 				return *it;
 			}
 
+			// Mathematical operations
+			void add(const Cell &other) EXCEPT final override {
+				Cell to_add = other;
+				if (other.type() != CellType::List) {
+					to_add = ListTypeCell<ValueType, CellTypeType>();
+					to_add.push(other);
+				}
+				_value.insert(_value.end(), to_add.cbegin(), to_add.cend());
+			}
+
 			// Lambda/macro functions
 			Cell lambda_ptr() const EXCEPT final override { return _value[lm_ptr]; }
 			void lambda_ptr(const Cell &ptr) EXCEPT final override { lm(); _value[lm_ptr] = ptr; }

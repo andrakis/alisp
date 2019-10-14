@@ -44,6 +44,8 @@
 				(+ (list (quote or)) (tail Conds)))))))
 
 	(define Depth 0)
+	;; controlled by -s flag
+	(define Silent false) ;; whether to print (dbg) messages
 	(define seval (lambda (X Env) (begin
 		(if (not (def? Env))
 			(define Env (env:new)))
@@ -60,53 +62,49 @@
 			(+ (string:substr Str 0 37) "...")
 			Str))))
 	(define dbg (lambda Args
-		(print (depthness) (repeat "-" Depth) Args)))
+		(if (not Silent)
+			(print (depthness) (repeat "-" Depth) Args))))
 	(define depthness (lambda ()
 		(if (<= Depth 9) Depth "+")))
 
 	(define do-next (lambda (X Env) (begin
-		(dbg "(do-next" X Env)
+		(dbg "(do-next" (str-limit X) Env)
 		(if (= nil X)
 			X
 			(if (simple? X)
 				X
-				(if (= (atom atom) (typeof X))
+				(if (= (quote atom) (typeof X))
 					(env:get X Env)
 					(if (empty? X)
 						nil
 						(do-complex X Env)))))
 	)))
-	(define atom (macro (Name)
-		(if (= (quote atom) (typeof Name))
-			(list (quote quote) Name)
-			;; else
-			(error "Atom must be a simple type"))))
 	(define simple? (lambda (X) (begin
 		(define T (typeof X))
 		(or (= T (quote number)) (= T (quote string)))
 	)))
 	(define do-complex (lambda (X Env) (begin
 		;; (dbg "(do-complex" X Env ")")
-		(if (= (atom atom) (typeof (head X)))
+		(if (= (quote atom) (typeof (head X)))
 			(do-builtin X Env)
 			(do-proc (head X) (tail X) Env))
 	)))
 	(define do-builtin (lambda (X Env) (begin
 		;; (dbg "(do-builtin" X Env ")")
 		(define Xh (head X))
-		(if (= (atom quote) Xh)
+		(if (= (quote quote) Xh)
 			(index X 1)
-			(if (= (atom if) Xh)
+			(if (= (quote if) Xh)
 				(do-if (tail X) Env)
-				(if (= (atom define) Xh)
+				(if (= (quote define) Xh)
 					(env:define (index X 1) (seval (index X 2) Env) Env)
-					(if (= (atom set!) Xh)
+					(if (= (quote set!) Xh)
 						(env:set! (index X 1) (seval (index X 2) Env) Env)
-						(if (= (atom lambda) Xh)
+						(if (= (quote lambda) Xh)
 							(cell:lambda (index X 1) (index X 2) Env)
-							(if (= (atom macro) Xh)
+							(if (= (quote macro) Xh)
 								(cell:macro (index X 1) (index X 2) Env)
-								(if (= (atom begin) Xh)
+								(if (= (quote begin) Xh)
 									(do-begin (tail X) Env)
 									;; else
 									(do-proc (head X) (tail X) Env)
@@ -124,7 +122,7 @@
 		(define Conseq (index Args 1))
 		(define Alt (index Args 2))
 		(define Result (seval Test Env))
-		;; (dbg "do-if got" Result)
+		(dbg "if" (str-limit Test) "=>" Result)
 		(do-next (if (= false Result) Alt Conseq) Env)
 	)))
 	(define do-begin (lambda (Bodies Env) (begin
@@ -141,30 +139,30 @@
 		;; (dbg "(do-proc" Proc1 ")")
 		(define Pt (typeof Proc1))
 		(define Exps
-			(if (= (atom macro) Pt)
+			(if (= (quote macro) Pt)
 				Exps0
 				(map Exps0 (lambda (E) (seval E Env0)))))
 		;; (dbg "exps" Exps)
-		(if (= (atom lambda) Pt) (begin
+		(if (= (quote lambda) Pt) (begin
 			;; (dbg "is lambda")
 			(define Args (cell:lambda_args Proc1))
 			(define Body (cell:lambda_body Proc1))
 			(define PEnv (cell:lambda_env  Proc1))
 			(define Env1 (env:capture Args Exps PEnv))
 			(do-next Body Env1)
-		) (if (= (atom macro) Pt) (begin
+		) (if (= (quote macro) Pt) (begin
 			;; (dbg "is macro")
 			(define Args (cell:lambda_args Proc1))
 			(define Body (cell:lambda_body Proc1))
 			(define PEnv (cell:lambda_env  Proc1))
 			(define Env1 (env:capture Args Exps PEnv))
 			(define MR (seval Body Env1))
-			(dbg "Macro result:" MR)
+			(dbg "macro result:" MR)
 			(do-next MR Env0)
-		) (if (= (atom proc) Pt) (begin
+		) (if (= (quote proc) Pt) (begin
 			;; (dbg "is proc with exps" Exps)
 			(cell:proc Proc1 Exps)
-		) (if (= (atom proc_env) Pt) (begin
+		) (if (= (quote proc_env) Pt) (begin
 			;; (dbg "is procenv")
 			(cell:proc_env Proc1 Exps Env0)
 		) (begin
@@ -180,16 +178,42 @@
 	(define Code (quote (fac 10)))
 	;; (define Code (quote (seval fac 10)))
 
+	(define File "")
+	(define Args (list))
+	(define ArgsOnly false) ;; pass -- and all following items are passed as arguments
+	(define parse-args (lambda (args) (begin
+		(if (empty? args)
+			nil
+				(if ArgsOnly
+					(set! Args args)
+					(begin
+						(define arg`h (head args))
+						(if (= "-s" arg`h)
+							(set! Silent true)
+							(if (= "" File)
+								(set! File arg`h) 
+								;; all other arguments
+								(set! Args (+ Args (list arg`h)))
+							)
+						)
+						(parse-args (tail args))
+					)
+				)
+			)
+		)))
+
 	(if (def? argv)
 		(if (not (empty? argv)) (begin
-			(define h (head argv))
+			(parse-args argv)
 			;; attempt to load file
 			(set! Code
-				(debug:parse (file:read (file:path h))))
-			(print "Loaded from" (file:path h))
+				(debug:parse (file:read (file:path File))))
+			(print "Loaded from" (file:path File))
 			;; update argv
 			(set! argv (tail argv))
-		)))
+			(set! argv Args)
+		))
+	)
 	(define Result (seval Code (env:new)))
 	(print "Result:" Result)
 )

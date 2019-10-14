@@ -30,6 +30,22 @@
 					true
 					(+ (list (quote or)) (tail conds))))))))
 
+	;; Macro that implements logical and.
+	;; This logical and is short-circuited, that is if the first condition
+	;; is not met, the following conditions, if any, are not evaluated.
+	;; (and [cond] [rest...]) ->
+	;;   (if [cond] (and [rest...]) false)
+	;; Note that this macro takes a variable number of arguments.
+	(define and (macro conds (begin
+		(if (empty? conds)
+			true
+			(begin ;; else
+				(print "Testing condition" (head conds))
+				;; (if cond (and rest...) false)
+				(list (quote if) (head conds)
+					(+ (list (quote and)) (tail conds))
+					false))))))
+
 	;; Increment a variable.
 	(define inc! (macro (name value) (begin
 		;; if value not supplied, default to 1
@@ -48,5 +64,11 @@
 		(= a 3) (= a 2) (= a 11)
 		;; These will not
 		(= a 5) (= a 4)
+	))
+
+	(define b 2)
+	(print "and" (and
+		;; All will run
+		(= a 11) (= b 2)
 	))
 )

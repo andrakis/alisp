@@ -70,6 +70,8 @@ History
 
 (Some versions not in separate commits)
 
+* 0.68.9 - Platform 0.3 implemented for Node.js. Contains an evaluator written in alisp, and more sample code.
+
 * 0.67 - Fixed macros not running, `set!` misbehaving (throwing exceptions), added a number of platform functions; added Node.js version of interpreter and platform.
 
 * 0.66 - Add runtime bounds/arguments checking; StringCell has ListCell-like behaviours; memory leak fixed; added linenoise-ng; split into new repo

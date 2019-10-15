@@ -1,7 +1,7 @@
 ALisp
 =====
 
-A Lisp implementation in C++ 14 and Node.js.
+A Lisp implementation in C++ 14 (**alisp**) and Node.js (**alisp.js**).
 
 
 What?

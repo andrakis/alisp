@@ -35,13 +35,13 @@
 	;; (or [cond] [rest...]) ->
 	;;   (if [cond] true (or [rest...]))
 	;; Note that this macro takes a variable number of arguments.
-	(define or (macro Conds (begin
+	(define or (macro Conds
 		(if (empty? Conds)
 			false
 			;; (if cond true (or rest...))
 			(list (quote if) (head Conds)
 				true
-				(+ (list (quote or)) (tail Conds)))))))
+				(+ (list (quote or)) (tail Conds))))))
 
 	(define Depth 0)
 	;; controlled by -s flag
@@ -50,7 +50,7 @@
 		(if (not (def? Env))
 			(define Env (env:new)))
 		(set! Depth (+ 1 Depth))
-		(dbg "(seval" (str-limit X) Env ")")
+		;;(dbg "(seval" (str-limit X) Env ")")
 		(define Result (do-next X Env))
 		(dbg "(seval" (str-limit X) Env ") =>" (str-limit Result))
 		(set! Depth (- Depth 1))
@@ -69,15 +69,13 @@
 
 	(define do-next (lambda (X Env) (begin
 		(dbg "(do-next" (str-limit X) Env)
-		(if (= nil X)
+		(if (or (= nil X) (simple? X))
 			X
-			(if (simple? X)
-				X
-				(if (= (quote atom) (typeof X))
-					(env:get X Env)
-					(if (empty? X)
-						nil
-						(do-complex X Env)))))
+			(if (= (quote atom) (typeof X))
+				(env:get X Env)
+				(if (empty? X)
+					nil
+					(do-complex X Env))))
 	)))
 	(define simple? (lambda (X) (begin
 		(define T (typeof X))
@@ -123,7 +121,9 @@
 		(define Alt (index Args 2))
 		(define Result (seval Test Env))
 		(dbg "if" (str-limit Test) "=>" Result)
-		(do-next (if (= false Result) Alt Conseq) Env)
+		(if TailRecursive
+			(do-next (if (= false Result) Alt Conseq) Env)
+			(seval (if (= false Result) Alt Conseq) Env))
 	)))
 	(define do-begin (lambda (Bodies Env) (begin
 		;; (dbg "do-begin" Bodies)
@@ -145,20 +145,24 @@
 		;; (dbg "exps" Exps)
 		(if (= (quote lambda) Pt) (begin
 			;; (dbg "is lambda")
-			(define Args (cell:lambda_args Proc1))
-			(define Body (cell:lambda_body Proc1))
-			(define PEnv (cell:lambda_env  Proc1))
-			(define Env1 (env:capture Args Exps PEnv))
-			(do-next Body Env1)
+			(define Env1 (env:capture
+				(cell:lambda_args Proc1)
+				Exps
+				(cell:lambda_env  Proc1)))
+			(if TailRecursive
+				(do-next (cell:lambda_body Proc1) Env1)
+				(seval (cell:lambda_body Proc1) Env1))
 		) (if (= (quote macro) Pt) (begin
 			;; (dbg "is macro")
-			(define Args (cell:lambda_args Proc1))
-			(define Body (cell:lambda_body Proc1))
-			(define PEnv (cell:lambda_env  Proc1))
-			(define Env1 (env:capture Args Exps PEnv))
-			(define MR (seval Body Env1))
+			(define Env1 (env:capture
+				(cell:lambda_args Proc1)
+				Exps
+				(cell:lambda_env  Proc1)))
+			(define MR (seval (cell:lambda_body Proc1) Env1))
 			(dbg "macro result:" MR)
-			(do-next MR Env0)
+			(if TailRecursive
+				(do-next MR Env0)
+				(seval MR Env0))
 		) (if (= (quote proc) Pt) (begin
 			;; (dbg "is proc with exps" Exps)
 			(cell:proc Proc1 Exps)
@@ -181,28 +185,30 @@
 	(define File "")
 	(define Args (list))
 	(define ArgsOnly false) ;; pass -- and all following items are passed as arguments
+	(define TailRecursive false) ;; pass -t to enable, makes readout difficult to parse
 	(define parse-args (lambda (args) (begin
-		(if (empty? args)
-			nil
-				(if ArgsOnly
-					(set! Args args)
-					(begin
-						(define arg`h (head args))
-						(if (= "-s" arg`h)
-							(set! Silent true)
+		(if (not (empty? args))
+			(if (or ArgsOnly (not (= "" File)))
+				(set! Args args)
+				(begin
+					(define arg`h (head args))
+					(if (= "-s" arg`h)
+						(set! Silent true)
+						(if (= "-t" arg`h)
+							(set! TailRecursive true)
 							(if (= "" File)
 								(set! File arg`h) 
 								;; all other arguments
 								(set! Args (+ Args (list arg`h)))
 							)
 						)
-						(parse-args (tail args))
 					)
+					(parse-args (tail args))
 				)
 			)
-		)))
+		))))
 
-	(if (def? argv)
+	(if (def? argv) (begin
 		(if (not (empty? argv)) (begin
 			(parse-args argv)
 			;; attempt to load file
@@ -210,10 +216,12 @@
 				(debug:parse (file:read (file:path File))))
 			(print "Loaded from" (file:path File))
 			;; update argv
-			(set! argv (tail argv))
 			(set! argv Args)
 		))
-	)
+	))
 	(define Result (seval Code (env:new)))
 	(print "Result:" Result)
+	;;(print "Argument state:")
+	;;(print " File:" File "Silent:" Silent "TailRecursive:" TailRecursive)
+	;;(print " Arguments passing to child" argv)
 )

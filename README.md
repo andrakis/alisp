@@ -51,6 +51,14 @@ How (to build)?
 * Node.js version:
 
   * In any console run: <code>node index *[options]*</code>
+
+  * Try running the debug evaluator in itself:
+
+    * <code>node index seval.lisp -s -t seval.lisp fac.lisp</code>
+
+      * The `-s` switch silences the debugging output of one of the seval instances.
+
+	  * The `-t` switch enables tail recursion
   
 Pass `--help` on the command line for information on commandline options.
 

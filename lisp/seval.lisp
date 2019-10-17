@@ -120,10 +120,11 @@
 		(define Conseq (index Args 1))
 		(define Alt (index Args 2))
 		(define Result (seval Test Env))
-		(dbg "if" (str-limit Test) "=>" Result)
+		(define Return (if (= false Result) Alt Conseq))
+		(dbg "if" (str-limit Test) (str-limit Conseq) (str-limit Alt) "=>" (str-limit Return))
 		(if TailRecursive
-			(do-next (if (= false Result) Alt Conseq) Env)
-			(seval (if (= false Result) Alt Conseq) Env))
+			(do-next Return Env)
+			(seval Return Env))
 	)))
 	(define do-begin (lambda (Bodies Env) (begin
 		;; (dbg "do-begin" Bodies)
@@ -140,7 +141,7 @@
 		(define Pt (typeof Proc1))
 		(define Exps
 			(if (= (quote macro) Pt)
-				Exps0
+				Exps0 ;; do not evaluate macros
 				(map Exps0 (lambda (E) (seval E Env0)))))
 		;; (dbg "exps" Exps)
 		(if (= (quote lambda) Pt) (begin

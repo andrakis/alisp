@@ -15,29 +15,29 @@
 ;; 
 (begin
 	;; Repeat String given Count times
-	(define repeat (lambda (String Count) (repeat/3 String Count "")))
+	(define repeat (lambda (String Count) (next repeat/3 String Count "")))
 	;; Tail recursive repeat implementation.
 	(define repeat/3 (lambda (String Count Acc)
 		(if (> Count 0)
-			(repeat/3 String (- Count 1) (+ Acc String))
+			(next repeat/3 String (- Count 1) (+ Acc String))
 			Acc
 		)
 	))
 
 	;; Map a List, calling Observer on each item and returning a new list
 	;; with the results of each Observer call.
-	(define map (lambda (List Observer) (map/3 List Observer (list))))
+	(define map (lambda (List Observer) (next map/3 List Observer (list))))
 	;; Tail recursive map implementation.
 	(define map/3 (lambda (List Observer Acc)
 		(if (empty? List)
 			Acc
-			(map/3 (tail List) Observer (+ Acc (list (Observer (head List)))))
+			(next map/3 (tail List) Observer (+ Acc (list (Observer (head List)))))
 		)
 	))
 
 	;; Macro that rewrites (?def symbol) to (env:defined (quote symbol)).
 	;; Makes it so one does not need to (quote) their symbol name.
-	(define def? (macro (Sym) (list (quote env:defined) (list (quote quote) Sym))))
+	(define def? (fastmacro (Sym) (list (quote env:defined) (list (quote quote) Sym))))
 
 	;; Macro that implements logical or.
 	;; This logical or is short-circuited, that is if the first condition
@@ -45,7 +45,7 @@
 	;; (or [cond] [rest...]) ->
 	;;   (if [cond] true (or [rest...]))
 	;; Note that this macro takes a variable number of arguments.
-	(define or (macro Conds
+	(define or (fastmacro Conds
 		(if (empty? Conds)
 			false
 			;; (if cond true (or rest...))
@@ -62,6 +62,8 @@
 	(define NotMinimal true) ;; minimal verbosity
 	;; controlled by -t flag
 	(define TailRecursive false) ;; tail recursion?
+
+	;; Main evaluation function
 	(define seval (lambda (X Env) (begin
 		(set! Depth (+ 1 Depth))
 		;;(dbg "(seval" (str-limit X) Env ")")
@@ -109,7 +111,7 @@
 				(env:get X Env)
 				(if (empty? X)
 					nil
-					(do-complex X Env))))
+					(next do-complex X Env))))
 	)))
 	
 	;; Test if given value is simple, that is can be returned as is with no
@@ -126,8 +128,8 @@
 	(define do-complex (lambda (X Env) (begin
 		;; (dbg "(do-complex" X Env ")")
 		(if (= (quote atom) (typeof (head X)))
-			(do-builtin X Env)
-			(do-proc (head X) (tail X) Env))
+			(next do-builtin X Env)
+			(next do-proc (head X) (tail X) Env false))
 	)))
 
 	;; If the first item in X is identified as an atom, check if it matches
@@ -148,10 +150,16 @@
 							(cell:lambda (index X 1) (index X 2) Env)
 							(if (= (quote macro) Xh)
 								(cell:macro (index X 1) (index X 2) Env)
-								(if (= (quote begin) Xh)
-									(do-begin (tail X) Env)
-									;; else
-									(do-proc (head X) (tail X) Env)
+								(if (= (quote fastmacro) Xh)
+									(cell:fastmacro (index X 1) (index X 2) Env)
+									(if (= (quote begin) Xh)
+										(next do-begin (tail X) Env)
+										(if (= (quote next) Xh)
+											(next do-proc-next (tail X) Env)
+											;; else
+											(next do-proc (head X) (tail X) Env false)
+										)
+									)
 								)
 							)
 						)
@@ -174,8 +182,8 @@
 		(if NotSilent
 			(dbg "if" (str-limit Test) (str-limit Conseq) (str-limit Alt) "=>" (str-limit Return)))
 		(if TailRecursive
-			(do-next Return Env)
-			(seval Return Env))
+			(next do-next Return Env)
+			(next seval Return Env))
 	)))
 
 	;; Perform the builtin "(begin ...)".
@@ -184,46 +192,60 @@
 	(define do-begin (lambda (Bodies Env) (begin
 		;; (dbg "do-begin" Bodies)
 		(if (empty? (tail Bodies))
-			(do-next (head Bodies) Env)
+			(next do-next (head Bodies) Env)
 			(begin
 				(seval (head Bodies) Env)
-				(do-begin (tail Bodies) Env)))
+				(next do-begin (tail Bodies) Env)))
 	)))
+
+	;; Call a proc in the "next" mode, which means to reuse the current
+	;; environment for the next function call, instead of creating a new
+	;; environment.
+	(define do-proc-next (lambda (X Env)
+		(next do-proc (head X) (tail X) Env true)))
 
 	;; Call a proc, be it lambda, macro, proc, or procenv.
 	;; Unless a macro, all arguments are first evaluated.
 	;; If a lambda or macro, a new environment is created to capture the arguments.
 	;; If a lambda or macro, tail recursion can be used here.
-	(define do-proc (lambda (Proc0 Exps0 Env0) (begin
+	(define do-proc (lambda (Proc0 Exps0 Env0 IsNext) (begin
 		;; (dbg "(do-proc" Proc0 Exps0 Env0 ")")
 		(define Proc1 (seval Proc0 Env0))
 		;; (dbg "(do-proc" Proc1 ")")
 		(define Pt (typeof Proc1))
 		(define Exps
-			(if (= (quote macro) Pt)
+			(if (or (= (quote macro) Pt) (= (quote fastmacro) Pt))
 				Exps0 ;; do not evaluate macros
 				(map Exps0 (lambda (E) (seval E Env0)))))
 		;; (dbg "exps" Exps)
 		(if (= (quote lambda) Pt) (begin
 			;; (dbg "is lambda")
-			(define Env1 (env:capture
-				(cell:lambda_args Proc1)
-				Exps
-				(cell:lambda_env  Proc1)))
+			(define Env1
+				(if IsNext
+					(env:recapture Env0 (cell:lambda_args Proc1) Exps)
+					(env:capture   (cell:lambda_args Proc1) Exps (cell:lambda_env Proc1))))
 			(if TailRecursive
-				(do-next (cell:lambda_body Proc1) Env1)
-				(seval (cell:lambda_body Proc1) Env1))
+				(next do-next (cell:lambda_body Proc1) Env1)
+				(next seval (cell:lambda_body Proc1) Env1))
 		) (if (= (quote macro) Pt) (begin
 			;; (dbg "is macro")
-			(define Env1 (env:capture
-				(cell:lambda_args Proc1)
-				Exps
-				(cell:lambda_env  Proc1)))
+			(define Env1
+				(if IsNext
+					(env:recapture Env0 (cell:lambda_args Proc1) Exps)
+					(env:capture   (cell:lambda_args Proc1) Exps (cell:lambda_env Proc1))))
 			(define MR (seval (cell:lambda_body Proc1) Env1))
 			(dbg "macro result:" MR)
 			(if TailRecursive
-				(do-next MR Env0)
-				(seval MR Env0))
+				(next do-next MR Env0)
+				(next seval MR Env0))
+		) (if (= (quote fastmacro) Pt) (begin
+			(dbg "is fast macro")
+			(env:recapture (cell:lambda_env Proc1) (cell:lambda_args Proc1) Exps)
+			(define MR (seval (cell:lambda_body Proc1) (cell:lambda_env Proc1)))
+			(dbg "fastmacro result:" MR)
+			(if TailRecursive
+				(next do-next MR Env0)
+				(next seval MR Env0))
 		) (if (= (quote proc) Pt) (begin
 			;; (dbg "is proc with exps" Exps)
 			(cell:proc Proc1 Exps)
@@ -232,13 +254,13 @@
 			(cell:proc_env Proc1 Exps Env0)
 		) (begin
 			(error "Not an executable cell")
-		)))))
+		))))))
 	)))
 
 	;; tail recursive factorial
-	(define fac (lambda (n) (fac/2 n 1)))
+	(define fac (lambda (n) (next fac/2 n 1)))
 	(define fac/2 (lambda (n a)
-		(if (= 1 n) a (fac/2 (- n 1) (* n a)))))
+		(if (= 1 n) a (next fac/2 (- n 1) (* n a)))))
 
 	;; Local variables
 	(define Code (quote (fac 10)))
@@ -267,7 +289,7 @@
 							)
 						)
 					)
-					(parse-args (tail args))
+					(next parse-args (tail args))
 				)
 			)
 		))))

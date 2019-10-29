@@ -37,7 +37,7 @@
 
 	;; Macro that rewrites (?def symbol) to (env:defined (quote symbol)).
 	;; Makes it so one does not need to (quote) their symbol name.
-	(define def? (fastmacro (Sym) (list (quote env:defined) (list (quote quote) Sym))))
+	(define def? (fastmacro (Sym) (list 'env:defined (list 'quote Sym))))
 
 	;; Macro that implements logical or.
 	;; This logical or is short-circuited, that is if the first condition
@@ -49,9 +49,9 @@
 		(if (empty? Conds)
 			false
 			;; (if cond true (or rest...))
-			(list (quote if) (head Conds)
+			(list 'if (head Conds)
 				true
-				(+ (list (quote or)) (tail Conds))))))
+				(+ (list 'or) (tail Conds))))))
 
 	;; Evaluation depth. Recursive calls to seval increase this.
 	(define Depth 0)
@@ -66,9 +66,11 @@
 	;; Main evaluation function
 	(define seval (lambda (X Env) (begin
 		(set! Depth (+ 1 Depth))
-		;;(dbg "(seval" (str-limit X) Env ")")
+		(if NotSilent
+			(if NotMinimal
+				(dbg "(seval  " (str-limit X) Env ")")))
 		(define Result (do-next X Env))
-		(dbg "(seval" (str-limit X) Env ") =>" (str-limit Result))
+		(dbg "(seval  " (str-limit X) Env ") =>" (str-limit Result))
 		(set! Depth (- Depth 1))
 		Result
 	)))
@@ -107,7 +109,7 @@
 				(dbg "(do-next" (str-limit X) Env)))
 		(if (or (= nil X) (simple? X))
 			X
-			(if (= (quote atom) (typeof X))
+			(if (= 'atom (typeof X))
 				(env:get X Env)
 				(if (empty? X)
 					nil
@@ -120,17 +122,16 @@
 	;;       simple?(any()) -> false
 	(define simple? (lambda (X) (begin
 		(define T (typeof X))
-		(or (= T (quote number)) (= T (quote string)))
+		(or (= T 'number) (= T 'string))
 	)))
 
 	;; Perform the complex evaluation of the given expression.
 	;; The expression is either a builtin or a procedure call.
-	(define do-complex (lambda (X Env) (begin
-		;; (dbg "(do-complex" X Env ")")
-		(if (= (quote atom) (typeof (head X)))
+	(define do-complex (lambda (X Env)
+		(if (= 'atom (typeof (head X)))
 			(next do-builtin X Env)
 			(next do-proc (head X) (tail X) Env false))
-	)))
+	))
 
 	;; If the first item in X is identified as an atom, check if it matches
 	;; a builtin. If not, do-proc is used an the expression treated as a function
@@ -138,24 +139,24 @@
 	(define do-builtin (lambda (X Env) (begin
 		;; (dbg "(do-builtin" X Env ")")
 		(define Xh (head X))
-		(if (= (quote quote) Xh)
-			(index X 1)
-			(if (= (quote if) Xh)
-				(do-if (tail X) Env)
-				(if (= (quote define) Xh)
-					(env:define (index X 1) (seval (index X 2) Env) Env)
-					(if (= (quote set!) Xh)
-						(env:set! (index X 1) (seval (index X 2) Env) Env)
-						(if (= (quote lambda) Xh)
-							(cell:lambda (index X 1) (index X 2) Env)
-							(if (= (quote macro) Xh)
-								(cell:macro (index X 1) (index X 2) Env)
-								(if (= (quote fastmacro) Xh)
-									(cell:fastmacro (index X 1) (index X 2) Env)
-									(if (= (quote begin) Xh)
-										(next do-begin (tail X) Env)
-										(if (= (quote next) Xh)
-											(next do-proc-next (tail X) Env)
+		(if (= 'next Xh)
+			(next do-proc-next (tail X) Env)
+			(if (= 'quote Xh)
+				(index X 1)
+				(if (= 'if Xh)
+					(do-if (tail X) Env)
+					(if (= 'define Xh)
+						(env:define (index X 1) (seval (index X 2) Env) Env)
+						(if (= 'set! Xh)
+							(env:set! (index X 1) (seval (index X 2) Env) Env)
+							(if (= 'lambda Xh)
+								(cell:lambda (index X 1) (index X 2) Env)
+								(if (= 'macro Xh)
+									(cell:macro (index X 1) (index X 2) Env)
+									(if (= 'fastmacro Xh)
+										(cell:fastmacro (index X 1) (index X 2) Env)
+										(if (= 'begin Xh)
+											(next do-begin (tail X) Env)
 											;; else
 											(next do-proc (head X) (tail X) Env false)
 										)
@@ -189,14 +190,13 @@
 	;; Perform the builtin "(begin ...)".
 	;; The final item in the begin block is used for tail recursion, and
 	;; is used as the return value for the begin block.
-	(define do-begin (lambda (Bodies Env) (begin
-		;; (dbg "do-begin" Bodies)
+	(define do-begin (lambda (Bodies Env)
 		(if (empty? (tail Bodies))
 			(next do-next (head Bodies) Env)
 			(begin
 				(seval (head Bodies) Env)
 				(next do-begin (tail Bodies) Env)))
-	)))
+	))
 
 	;; Call a proc in the "next" mode, which means to reuse the current
 	;; environment for the next function call, instead of creating a new
@@ -214,31 +214,31 @@
 		;; (dbg "(do-proc" Proc1 ")")
 		(define Pt (typeof Proc1))
 		(define Exps
-			(if (or (= (quote macro) Pt) (= (quote fastmacro) Pt))
+			(if (or (= 'macro Pt) (= 'fastmacro Pt))
 				Exps0 ;; do not evaluate macros
 				(map Exps0 (lambda (E) (seval E Env0)))))
 		;; (dbg "exps" Exps)
-		(if (= (quote lambda) Pt) (begin
+		(if (= 'lambda Pt) (begin
 			;; (dbg "is lambda")
 			(define Env1
 				(if IsNext
 					(env:recapture Env0 (cell:lambda_args Proc1) Exps)
-					(env:capture   (cell:lambda_args Proc1) Exps (cell:lambda_env Proc1))))
+					(env:capture (cell:lambda_args Proc1) Exps (cell:lambda_env Proc1))))
 			(if TailRecursive
 				(next do-next (cell:lambda_body Proc1) Env1)
 				(next seval (cell:lambda_body Proc1) Env1))
-		) (if (= (quote macro) Pt) (begin
+		) (if (= 'macro Pt) (begin
 			;; (dbg "is macro")
 			(define Env1
 				(if IsNext
 					(env:recapture Env0 (cell:lambda_args Proc1) Exps)
-					(env:capture   (cell:lambda_args Proc1) Exps (cell:lambda_env Proc1))))
+					(env:capture (cell:lambda_args Proc1) Exps (cell:lambda_env Proc1))))
 			(define MR (seval (cell:lambda_body Proc1) Env1))
 			(dbg "macro result:" MR)
 			(if TailRecursive
 				(next do-next MR Env0)
 				(next seval MR Env0))
-		) (if (= (quote fastmacro) Pt) (begin
+		) (if (= 'fastmacro Pt) (begin
 			(dbg "is fast macro")
 			(env:recapture (cell:lambda_env Proc1) (cell:lambda_args Proc1) Exps)
 			(define MR (seval (cell:lambda_body Proc1) (cell:lambda_env Proc1)))
@@ -246,15 +246,12 @@
 			(if TailRecursive
 				(next do-next MR Env0)
 				(next seval MR Env0))
-		) (if (= (quote proc) Pt) (begin
-			;; (dbg "is proc with exps" Exps)
+		) (if (= 'proc Pt)
 			(cell:proc Proc1 Exps)
-		) (if (= (quote proc_env) Pt) (begin
-			;; (dbg "is procenv")
+		(if (= 'proc_env Pt)
 			(cell:proc_env Proc1 Exps Env0)
-		) (begin
 			(error "Not an executable cell")
-		))))))
+		)))))
 	)))
 
 	;; tail recursive factorial
@@ -263,7 +260,7 @@
 		(if (= 1 n) a (next fac/2 (- n 1) (* n a)))))
 
 	;; Local variables
-	(define Code (quote (fac 10)))
+	(define Code '(fac 10))
 	(define File "")
 	(define Args (list))
 	(define ArgsOnly false) ;; pass -- and all following items are passed as arguments
@@ -305,6 +302,7 @@
 			(set! argv Args)
 		))
 	))
+
 	(define Result (seval Code (env:new)))
 	(print "Result:" Result)
 	;;(print "Argument state:")

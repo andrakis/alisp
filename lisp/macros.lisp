@@ -2,17 +2,16 @@
 (begin
 	;; Macro that rewrites (?def symbol) to (env:defined (quote symbol)).
 	;; Makes it so one does not need to (quote) their symbol name.
-	(define def? (macro (sym) (list (quote env:defined) 
-		(list (quote quote) sym))))
+	(define def? (fastmacro (sym) (list 'env:defined (list 'quote sym))))
 
 	;; Macro that implements a while loop.
 	;; (while [cond] [body])
 	;; Rewrites your code to:
 	;;   (if cond (begin body (do cond body)))
-	(define while (macro (cond body)
-		(list (quote if) cond (list (quote begin)
+	(define while (fastmacro (cond body)
+		(list 'if cond (list 'begin
 			body
-			(list (quote while) cond body)))))
+			(list 'while cond body)))))
 
 	;; Macro that implements logical or.
 	;; This logical or is short-circuited, that is if the first condition
@@ -20,15 +19,15 @@
 	;; (or [cond] [rest...]) ->
 	;;   (if [cond] true (or [rest...]))
 	;; Note that this macro takes a variable number of arguments.
-	(define or (macro conds (begin
+	(define or (fastmacro conds (begin
 		(if (empty? conds)
 			false
 			(begin ;; else
 				(print "Testing condition" (head conds))
 				;; (if cond true (or rest...))
-				(list (quote if) (head conds)
+				(list 'if (head conds)
 					true
-					(+ (list (quote or)) (tail conds))))))))
+					(+ (list 'or) (tail conds))))))))
 
 	;; Macro that implements logical and.
 	;; This logical and is short-circuited, that is if the first condition
@@ -36,22 +35,22 @@
 	;; (and [cond] [rest...]) ->
 	;;   (if [cond] (and [rest...]) false)
 	;; Note that this macro takes a variable number of arguments.
-	(define and (macro conds (begin
+	(define and (fastmacro conds (begin
 		(if (empty? conds)
 			true
 			(begin ;; else
 				(print "Testing condition" (head conds))
 				;; (if cond (and rest...) false)
-				(list (quote if) (head conds)
-					(+ (list (quote and)) (tail conds))
+				(list 'if (head conds)
+					(+ (list 'and) (tail conds))
 					false))))))
 
 	;; Increment a variable.
-	(define inc! (macro (name value) (begin
+	(define inc! (fastmacro (name value) (begin
 		;; if value not supplied, default to 1
 		(if (not (def? value)) (define value 1))
 		;; Return list that modifies variable
-		(list (quote set!) name (list (quote +) name value)))))
+		(list 'set! name (list '+ name value)))))
 
 	(define a 1)
   	(while (<= a 10) (begin

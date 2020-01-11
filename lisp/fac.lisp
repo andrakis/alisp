@@ -10,7 +10,8 @@
 		(if (= 1 n) a (next fac/2 (- n 1) (* n a)))))
 
 	(define x 10) ;; default value
-	(if (?def argv)
+	;;(if (?def argv)
+	(if (env:defined 'argv)
 		(if (not (empty? argv)) (begin
 			(define h (head argv))
 			(print "Using" h "for factorial")

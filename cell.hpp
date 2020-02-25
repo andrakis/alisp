@@ -499,7 +499,7 @@ namespace ALisp {
 				switch (type()) {
 					case CellType::Lambda: return "(#ref:lambda "; 
 					case CellType::Macro: return "(#ref:macro "; 
-					case CellType::Tuple: return "(tuple ";
+					//case CellType::Tuple: return "(tuple ";
 					default: return (str_or_repr ? "(" : "(list ");
 				}
 			}
